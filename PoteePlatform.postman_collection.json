@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "fa06939d-0bb1-4e80-8159-fb27f218e897",
+		"name": "PoteePlatform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nakateam\",\n    \"password\": \"explabs\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTIzNTE4MjYsInJlZnJlc2hfdXVpZCI6IjY2ZDE1YTcyLTAzYzItNGFmOS1iYTg0LTU0YmEyZjQ0ZmM0MCsrMSIsInVzZXJfaWQiOiIxIn0.v6R_vsWD-lbN8LSMZDz71QPiyGpQ4ujCqVGndRRlhTM\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Team",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"nakateam\",\n    \"password\": \"explabs\",\n    \"ssh_pub_key\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD031UdpvqUS/LzznU8JBYqnKY023HT3bhpw9hvWv2FcsmFMa0oZJstc/AJRvt45BYOSMEoITiaZ5pSdKoJ1InSv2KEWOf2MF76Ui1lmvmneIXu7Dj7OJkyGlk5SQ1WG9Wc/98qmg0RUKpO/Dw6GpD4hEYBsU/yXmNOXKCNTTmK7gfka06R0YGGatPilKhsfjKy8sUMuUPeeiX6GqB8wwz51AUCV+cabmgFXzgcTEI8D/2taplgiBqnfInY7dKEAzl2a1zuxR1zo45UFPPw37bd+qkOlkAECJ9hKTdsvDNphWDcu77+ovARP1mG+fx5Vr8SM3GaUHs+SQhH7BUTeAXlQsZ55yP4WnIZ5DpPOxsYO8RAs3NScR6fj+TUe2wHuxCATPeI3XBKQcA377uWGTFTfXe9TQDy4L2QA/jtFXbs5UdnR8P00ijXcQahdBd8UhYSgNQcJZZgNdiohQb1pj3Hn9dG1La9JOLdzl71VjxtiGq8fGI0urlLQGUC6qzg5FM= ivanh@ivanh\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/team/registration",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"team",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "info",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijk3ZWQ3ZjZjLTAxYjUtNDJlNy1hNDQ3LTQ5ZGNhYWExOWFhOCIsImV4cCI6MTY1MTg2MTM4MCwidXNlcl9pZCI6Im5ha2F0ZWFtIn0.HiAcyW_GdnzSeODvrTuUpFD974r92eapYRIIYVecTAQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/team/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"team",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost"
+		}
+	]
+}
