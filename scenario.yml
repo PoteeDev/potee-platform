@@ -1,0 +1,31 @@
+rounds: 100
+period: 0.5s
+actions: 
+  - ping
+  - get
+  - put
+  - exploit
+
+services:
+  test: # service with name "test"
+    hp: 1000 # service health points
+    domain: test # subdomain name for service
+    script: test.py # name of script with all actions for service
+    exploits: 
+      sql: # name for exploits
+        round: 1 # round for sql exploit run
+        cost: 5 # cost of exploit 
+      rce:
+        round: 2
+        cost: 5
+  test2: # service name
+    hp: 1000 # service health points
+    domain: test2 # subdomain name for service
+    script: test.py # name of script with all actions for service
+    exploits: 
+      sql: # name for exploits
+        round: 1 # round for sql exploit run
+        cost: 5 # cost of exploit 
+      rce:
+        round: 2
+        cost: 5

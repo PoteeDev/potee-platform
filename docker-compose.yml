@@ -4,10 +4,11 @@ x-environment:
   - REDIS_HOST=redis
   - REDIS_PORT=6379
   - REDIS_PASSWORD=$REDIS_PASSWORD
+  - MONGO_HOST=mongo
+  - MONGO_PASS=admin
   - MONGODB=mongo:27017
   - ACCESS_SECRET=98hbun98hsdfsdwesdfs
   - REFRESH_SECRET=786dfdbjhsbsdfsdfsdf
-
 
 services:
   traefik:
@@ -28,8 +29,7 @@ services:
   auth:
     image: explabs/potee-auth
     container_name: "auth"
-    environment:
-      *default-environment
+    environment: *default-environment
 
     labels:
       - "traefik.enable=true"
@@ -41,8 +41,8 @@ services:
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
   team:
     image: explabs/potee-team
-    environment:
-      *default-environment
+    container_name: "team"
+    environment: *default-environment
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.team.rule=PathPrefix(`/team`)"
@@ -51,12 +51,75 @@ services:
       - "traefik.http.middlewares.team-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.team.middlewares=team-strip"
       - "traefik.http.services.team.loadbalancer.server.port=8080"
-  
+
+  admin:
+    image: explabs/platform-admin
+    container_name: "admin"
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PASS=admin
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.entrypoints=web"
+      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/admin"
+      - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.admin.middlewares=admin-strip"
+      - "traefik.http.services.admin.loadbalancer.server.port=8080"
+
+  manager:
+    image: explabs/platform-manager
+    container_name: "manager"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=admin
+      - MONGO_HOST=mongo
+      - MONGO_PASS=admin
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+      - PYTHONUNBUFFERED=1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.manager.rule=PathPrefix(`/scenario`)"
+      - "traefik.http.routers.manager.entrypoints=web"
+      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
+      - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.manager.middlewares=manager-strip"
+      - "traefik.http.services.manager.loadbalancer.server.port=8000"
+    volumes:
+      - ./scenario.yml:/usr/app/scenario.yml
+
+  runner:
+    image: explabs/platform-runner
+    container_name: "runner"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=admin
+    volumes:
+      - ./test.py:/usr/app/test.py
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+
   redis:
     image: "redis:alpine"
+    container_name: "redis"
     command: 'redis-server --requirepass ${REDIS_PASSWORD}'
     ports:
-     - "6379:6379"
+      - "6379:6379"
 
   mongo:
     image: mongo:5.0
