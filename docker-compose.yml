@@ -30,7 +30,6 @@ services:
     image: explabs/potee-auth
     container_name: "auth"
     environment: *default-environment
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
@@ -53,14 +52,18 @@ services:
       - "traefik.http.services.team.loadbalancer.server.port=8080"
 
   admin:
-    image: explabs/platform-admin
+    image: explabs/potee-admin
     container_name: "admin"
     environment:
+      - ADMIN_PASS=admin
       - MONGO_HOST=mongo
       - MONGO_PASS=admin
       - REDIS_HOST=redis
       - REDIS_PASSWORD=$REDIS_PASSWORD
       - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+      - MINIO_HOST=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
@@ -69,9 +72,14 @@ services:
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
+    depends_on:
+      - minio
+    volumes:
+      - ./scenario.yml:/usr/app/scenario.yml
+      - ./test.py:/usr/app/scripts/test.py
 
   manager:
-    image: explabs/platform-manager
+    image: explabs/potee-manager
     container_name: "manager"
     environment:
       - RABBITMQ_HOST=rabbitmq
@@ -91,16 +99,18 @@ services:
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
-    volumes:
-      - ./scenario.yml:/usr/app/scenario.yml
+    depends_on:
+      - rabbitmq
 
   runner:
-    image: explabs/platform-runner
+    image: explabs/potee-runner
     container_name: "runner"
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=admin
       - RABBITMQ_PASS=admin
+    depends_on:
+      - rabbitmq
     volumes:
       - ./test.py:/usr/app/test.py
 
@@ -113,6 +123,27 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+  minio:
+    image: quay.io/minio/minio
+    container_name: "minio"
+    command: server --console-address ":9001" /data
+    expose:
+      - "9000"
+      - "9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
   redis:
     image: "redis:alpine"
