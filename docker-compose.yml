@@ -109,6 +109,9 @@ services:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=admin
       - RABBITMQ_PASS=admin
+      - MINIO_HOST=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
     depends_on:
       - rabbitmq
     volumes:
