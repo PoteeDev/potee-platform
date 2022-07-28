@@ -38,18 +38,35 @@ services:
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
-  team:
-    image: explabs/potee-team
-    container_name: "team"
+
+  entities:
+    image: explabs/potee-entities
+    container_name: "entities"
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.team.rule=PathPrefix(`/team`)"
-      - "traefik.http.routers.team.entrypoints=web"
-      - "traefik.http.middlewares.team-strip.stripprefix.prefixes=/team"
-      - "traefik.http.middlewares.team-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.team.middlewares=team-strip"
-      - "traefik.http.services.team.loadbalancer.server.port=8080"
+      - "traefik.http.routers.entities.rule=PathPrefix(`/entities`)"
+      - "traefik.http.routers.entities.entrypoints=web"
+      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/entities"
+      - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.entities.middlewares=entities-strip"
+      - "traefik.http.services.entities.loadbalancer.server.port=8080"
+
+  scores:
+    image: explabs/potee-scores
+    container_name: scores
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PASS=admin
+      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scores.rule=PathPrefix(`/scores`)"
+      - "traefik.http.routers.scores.entrypoints=web"
+      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/scores"
+      - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.scores.middlewares=scores-strip"
+      - "traefik.http.services.scores.loadbalancer.server.port=8080"
 
   admin:
     image: explabs/potee-admin
@@ -76,7 +93,7 @@ services:
       - minio
     volumes:
       - ./scenario.yml:/usr/app/scenario.yml
-      - ./test.py:/usr/app/scripts/test.py
+      - ./scripts/:/usr/app/scripts/
 
   manager:
     image: explabs/potee-manager
@@ -114,8 +131,6 @@ services:
       - MINIO_SECRET_KEY=minioadmin
     depends_on:
       - rabbitmq
-    volumes:
-      - ./test.py:/usr/app/test.py
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
