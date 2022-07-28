@@ -3,12 +3,12 @@ x-environment:
   &default-environment
   - REDIS_HOST=redis
   - REDIS_PORT=6379
-  - REDIS_PASSWORD=$REDIS_PASSWORD
+  - REDIS_PASSWORD=$REDIS_PASS
   - MONGO_HOST=mongo
-  - MONGO_PASS=admin
+  - MONGO_PASS=$MONGO_PASS
   - MONGODB=mongo:27017
-  - ACCESS_SECRET=98hbun98hsdfsdwesdfs
-  - REFRESH_SECRET=786dfdbjhsbsdfsdfsdf
+  - ACCESS_SECRET=$ACCESS_SECRET
+  - REFRESH_SECRET=$REFRESH_SECRET
 
 services:
   traefik:
@@ -57,8 +57,8 @@ services:
     container_name: scores
     environment:
       - MONGO_HOST=mongo
-      - MONGO_PASS=admin
-      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+      - MONGO_PASS=$MONGO_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.scores.rule=PathPrefix(`/scores`)"
@@ -72,15 +72,15 @@ services:
     image: explabs/potee-admin
     container_name: "admin"
     environment:
-      - ADMIN_PASS=admin
+      - ADMIN_PASS=$ADMIN_PASS
       - MONGO_HOST=mongo
-      - MONGO_PASS=admin
+      - MONGO_PASS=$MONGO_PASS
       - REDIS_HOST=redis
-      - REDIS_PASSWORD=$REDIS_PASSWORD
-      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+      - REDIS_PASSWORD=$REDIS_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
       - MINIO_HOST=minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ACCESS_KEY=potee
+      - MINIO_SECRET_KEY=$MINIO_PASS
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
@@ -100,13 +100,13 @@ services:
     container_name: "manager"
     environment:
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=admin
-      - RABBITMQ_PASS=admin
+      - RABBITMQ_USER=services
+      - RABBITMQ_PASS=$RABBITMQ_PASS
       - MONGO_HOST=mongo
-      - MONGO_PASS=admin
+      - MONGO_PASS=$MONGO_PASS
       - REDIS_HOST=redis
-      - REDIS_PASSWORD=$REDIS_PASSWORD
-      - ACCESS_SECRET=98hbun98hsdfsdwesdfs
+      - REDIS_PASSWORD=$REDIS_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
       - PYTHONUNBUFFERED=1
     labels:
       - "traefik.enable=true"
@@ -124,11 +124,11 @@ services:
     container_name: "runner"
     environment:
       - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=admin
-      - RABBITMQ_PASS=admin
+      - RABBITMQ_USER=services
+      - RABBITMQ_PASS=$RABBITMQ_PASS
       - MINIO_HOST=minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ACCESS_KEY=potee
+      - MINIO_SECRET_KEY=$MINIO_PASS
     depends_on:
       - rabbitmq
 
@@ -139,8 +139,8 @@ services:
       - 5672:5672
       - 15672:15672
     environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_USER=services
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASS
   minio:
     image: quay.io/minio/minio
     container_name: "minio"
@@ -149,8 +149,8 @@ services:
       - "9000"
       - "9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: potee
+      MINIO_ROOT_PASSWORD: $MINIO_PASS
     healthcheck:
       test:
         [
@@ -166,7 +166,7 @@ services:
   redis:
     image: "redis:alpine"
     container_name: "redis"
-    command: 'redis-server --requirepass ${REDIS_PASSWORD}'
+    command: 'redis-server --requirepass ${REDIS_PASS}'
     ports:
       - "6379:6379"
 
@@ -176,6 +176,6 @@ services:
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=$ADMIN_PASS
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASS
     ports:
       - "27017:27017"

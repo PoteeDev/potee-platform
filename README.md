@@ -3,6 +3,8 @@
 # run
 ```
 docker-compose up -d 
+# or
+docker compose --env-file .env.dev up -d
 ```
 # stop
 ```
