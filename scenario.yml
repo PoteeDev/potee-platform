@@ -11,6 +11,9 @@ services:
     reputation: 1000 # service health points
     domain: test # subdomain name for service
     script: test.py # name of script with all actions for service
+    checkers:
+      - comment
+      - auth
     exploits: 
       sql: # name for exploits
         round: 1 # round for sql exploit run
@@ -24,6 +27,9 @@ services:
     reputation: 1000 # service health points
     domain: test2 # subdomain name for service
     script: test.py # name of script with all actions for service
+    checkers:
+      - comment
+      - auth
     exploits: 
       sql: # name for exploits
         round: 1 # round for sql exploit run
