@@ -1,57 +1,71 @@
+
 import json
-from random import randint
-import time
-import sys
 import os
+from random import randint
+from potee import ServiceBase
+import fcntl
 
-time.sleep(1)
+class FakeDB:
+    def __init__(self) -> None:
+        self.filename = "data.json"
+        self.data = dict()
+        self.create_file()
 
+    def create_file(self):
+        if not os.path.exists(self.filename):
+            with open(self.filename, "a") as g:
+                fcntl.flock(g, fcntl.LOCK_EX)
+                g.write(json.dumps({}))
+                fcntl.flock(g, fcntl.LOCK_UN)
 
-filename = "storage.local"
+    def add(self, value):
+        with open(self.filename, "r") as g:
+            data = json.loads(g.read())
 
+        with open(self.filename, "w") as g:
+            fcntl.flock(g, fcntl.LOCK_EX)
+            _id = randint(1, 10000)
+            data[_id] = value
+            g.write(json.dumps(data))
+            fcntl.flock(g, fcntl.LOCK_UN)
+        return _id
+        
+    def get(self, _id):
+        with open(self.filename, "r") as g:
+            data = json.loads(g.read())
+            return data.get(id)
+        
 
-def save():
-    with open(filename, "w") as f:
-        f.write(json.dumps(fake_storage, indent=2))
+srv = ServiceBase()
+db = FakeDB()
 
+@srv.ping
+def comment(host):
+    return "pong"
 
-def load():
-    if os.path.exists(filename):
-        with open(filename) as f:
-            return json.loads(f.read())
-    else:
-        return dict()
+@srv.get("auth")
+def get_auth(host, _id):
+    return db.get(_id)
 
+@srv.put("auth")
+def put_auth(host, flag):
+    return db.add(flag)
 
-fake_storage = load()
+@srv.get("comment")
+def get_comment(host, _id):
+    return db.get(_id)
 
+@srv.put("comment")
+def put_comment(host, flag):
+    return db.add(flag)
 
-def main():
-    global fake_storage
-    if sys.argv[1] == "ping":
-        return randint(1, 1)
-    elif sys.argv[1] == "put":
-        if sys.argv[2] == "comment":
-            key = randint(0, 100000)
-            fake_storage[key] = sys.argv[4]
-            return key
-        if sys.argv[2] == "auth":
-            key = randint(0, 100000)
-            fake_storage[key] = sys.argv[4]
-            return key
-    elif sys.argv[1] == "get":
-        if sys.argv[2] == "comment":
-            return fake_storage.get(sys.argv[4])
-        if sys.argv[2] == "auth":
-            return fake_storage.get(sys.argv[4])
-    elif sys.argv[1] == "exploit":
-        if sys.argv[2] == "sql":
-            return randint(0, 1)
-        elif sys.argv[2] == "rce":
-            return randint(0, 1)
+@srv.exploit("rce")
+def put_comment(host):
+    return 1
 
+@srv.exploit("sql")
+def put_comment(host):
+    return 1
 
 if __name__ == "__main__":
-    result = main()
-    save()
-    print(result, end="")
+    srv.run()
