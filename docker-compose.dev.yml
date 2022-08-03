@@ -1,0 +1,183 @@
+version: '3.7'
+x-environment:
+  &default-environment
+  - REDIS_HOST=redis
+  - REDIS_PORT=6379
+  - REDIS_PASSWORD=$REDIS_PASS
+  - MONGO_HOST=mongo
+  - MONGO_PASS=$MONGO_PASS
+  - MONGODB=mongo:27017
+  - ACCESS_SECRET=$ACCESS_SECRET
+  - REFRESH_SECRET=$REFRESH_SECRET
+
+services:
+  traefik:
+    image: traefik:v2.6
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  auth:
+    image: explabs/potee-auth
+    container_name: "auth"
+    environment: *default-environment
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/auth"
+      - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.auth.middlewares=auth-strip"
+      - "traefik.http.services.auth.loadbalancer.server.port=8080"
+
+  entities:
+    image: explabs/potee-entities
+    container_name: "entities"
+    environment: *default-environment
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.entities.rule=PathPrefix(`/entities`)"
+      - "traefik.http.routers.entities.entrypoints=web"
+      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/entities"
+      - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.entities.middlewares=entities-strip"
+      - "traefik.http.services.entities.loadbalancer.server.port=8080"
+
+  scores:
+    image: explabs/potee-scores
+    container_name: scores
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PASS=$MONGO_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scores.rule=PathPrefix(`/scores`)"
+      - "traefik.http.routers.scores.entrypoints=web"
+      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/scores"
+      - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.scores.middlewares=scores-strip"
+      - "traefik.http.services.scores.loadbalancer.server.port=8080"
+
+  admin:
+    image: explabs/potee-admin
+    container_name: "admin"
+    environment:
+      - ADMIN_PASS=$ADMIN_PASS
+      - MONGO_HOST=mongo
+      - MONGO_PASS=$MONGO_PASS
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=$REDIS_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
+      - MINIO_HOST=minio:9000
+      - MINIO_ACCESS_KEY=potee
+      - MINIO_SECRET_KEY=$MINIO_PASS
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.entrypoints=web"
+      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/admin"
+      - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.admin.middlewares=admin-strip"
+      - "traefik.http.services.admin.loadbalancer.server.port=8080"
+    depends_on:
+      - minio
+    volumes:
+      - ./scenario.yml:/usr/app/scenario.yml
+      - ./scripts/:/usr/app/scripts/
+
+  manager:
+    image: explabs/potee-manager
+    container_name: "manager"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=services
+      - RABBITMQ_PASS=$RABBITMQ_PASS
+      - MONGO_HOST=mongo
+      - MONGO_PASS=$MONGO_PASS
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=$REDIS_PASS
+      - ACCESS_SECRET=$ACCESS_SECRET
+      - PYTHONUNBUFFERED=1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.manager.rule=PathPrefix(`/scenario`)"
+      - "traefik.http.routers.manager.entrypoints=web"
+      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
+      - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
+      - "traefik.http.routers.manager.middlewares=manager-strip"
+      - "traefik.http.services.manager.loadbalancer.server.port=8000"
+    depends_on:
+      - rabbitmq
+
+  runner:
+    image: explabs/potee-runner
+    container_name: "runner"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=services
+      - RABBITMQ_PASS=$RABBITMQ_PASS
+      - MINIO_HOST=minio:9000
+      - MINIO_ACCESS_KEY=potee
+      - MINIO_SECRET_KEY=$MINIO_PASS
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=services
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASS
+  minio:
+    image: quay.io/minio/minio
+    container_name: "minio"
+    command: server --console-address ":9001" /data
+    expose:
+      - "9000"
+      - "9001"
+    environment:
+      MINIO_ROOT_USER: potee
+      MINIO_ROOT_PASSWORD: $MINIO_PASS
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  redis:
+    image: "redis:alpine"
+    container_name: "redis"
+    command: 'redis-server --requirepass ${REDIS_PASS}'
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASS
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
