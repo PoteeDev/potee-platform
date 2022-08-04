@@ -4,40 +4,37 @@ import os
 from random import randint
 from potee import ServiceBase
 import fcntl
-
 class FakeDB:
-    def __init__(self) -> None:
-        self.filename = "data.json"
+    def __init__(self, name, srv) -> None:
+        self.filename = f"{name}_{srv}_data.json"
         self.data = dict()
-        self.create_file()
+        self.get_data()
 
-    def create_file(self):
+    def get_data(self):
         if not os.path.exists(self.filename):
-            with open(self.filename, "a") as g:
-                fcntl.flock(g, fcntl.LOCK_EX)
-                g.write(json.dumps({}))
-                fcntl.flock(g, fcntl.LOCK_UN)
+            self.data = {}
+        else:         
+            with open(self.filename, "r") as g:
+                self.data = json.loads(g.read())
 
     def add(self, value):
-        with open(self.filename, "r") as g:
-            data = json.loads(g.read())
 
         with open(self.filename, "w") as g:
             fcntl.flock(g, fcntl.LOCK_EX)
             _id = randint(1, 10000)
-            data[_id] = value
-            g.write(json.dumps(data))
+            self.data[_id] = value
+            g.write(json.dumps(self.data))
             fcntl.flock(g, fcntl.LOCK_UN)
         return _id
         
     def get(self, _id):
         with open(self.filename, "r") as g:
             data = json.loads(g.read())
-            return data.get(id)
+            return data.get(_id)
         
 
 srv = ServiceBase()
-db = FakeDB()
+
 
 @srv.ping
 def comment(host):
@@ -45,18 +42,22 @@ def comment(host):
 
 @srv.get("auth")
 def get_auth(host, _id):
+    db = FakeDB(host, "auth")
     return db.get(_id)
 
 @srv.put("auth")
 def put_auth(host, flag):
+    db = FakeDB(host, "auth")
     return db.add(flag)
 
 @srv.get("comment")
 def get_comment(host, _id):
+    db = FakeDB(host, "comment")
     return db.get(_id)
 
 @srv.put("comment")
 def put_comment(host, flag):
+    db = FakeDB(host, "comment")
     return db.add(flag)
 
 @srv.exploit("rce")
