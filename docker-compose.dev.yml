@@ -124,7 +124,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.manager.rule=PathPrefix(`/api/v1/scenario`)"
       - "traefik.http.routers.manager.entrypoints=web"
-      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
+      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
