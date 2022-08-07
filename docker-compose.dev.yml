@@ -32,9 +32,9 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/api/v1/auth`)"
       - "traefik.http.routers.auth.entrypoints=web"
-      - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/auth"
+      - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
@@ -48,9 +48,9 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.entities.rule=PathPrefix(`/entities`)"
+      - "traefik.http.routers.entities.rule=PathPrefix(`/api/v1/entities`)"
       - "traefik.http.routers.entities.entrypoints=web"
-      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/entities"
+      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.entities.middlewares=entities-strip"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
@@ -67,9 +67,9 @@ services:
       - ACCESS_SECRET=$ACCESS_SECRET
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.scores.rule=PathPrefix(`/scores`)"
+      - "traefik.http.routers.scores.rule=PathPrefix(`/api/v1/scores`)"
       - "traefik.http.routers.scores.entrypoints=web"
-      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/scores"
+      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.scores.middlewares=scores-strip"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
@@ -92,9 +92,9 @@ services:
       - MINIO_SECRET_KEY=$MINIO_PASS
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/api/v1/admin`)"
       - "traefik.http.routers.admin.entrypoints=web"
-      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/admin"
+      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
@@ -122,7 +122,7 @@ services:
       - PYTHONUNBUFFERED=1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.manager.rule=PathPrefix(`/scenario`)"
+      - "traefik.http.routers.manager.rule=PathPrefix(`/api/v1/scenario`)"
       - "traefik.http.routers.manager.entrypoints=web"
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"

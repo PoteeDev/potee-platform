@@ -32,12 +32,15 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/api/v1/auth`)"
       - "traefik.http.routers.auth.entrypoints=web"
-      - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/auth"
+      - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   entities:
     image: explabs/potee-entities
@@ -45,12 +48,15 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.entities.rule=PathPrefix(`/entities`)"
+      - "traefik.http.routers.entities.rule=PathPrefix(`/api/v1/entities`)"
       - "traefik.http.routers.entities.entrypoints=web"
-      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/entities"
+      - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.entities.middlewares=entities-strip"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   scores:
     image: explabs/potee-scores
@@ -61,12 +67,15 @@ services:
       - ACCESS_SECRET=$ACCESS_SECRET
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.scores.rule=PathPrefix(`/scores`)"
+      - "traefik.http.routers.scores.rule=PathPrefix(`/api/v1/scores`)"
       - "traefik.http.routers.scores.entrypoints=web"
-      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/scores"
+      - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.scores.middlewares=scores-strip"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   admin:
     image: explabs/potee-admin
@@ -83,17 +92,20 @@ services:
       - MINIO_SECRET_KEY=$MINIO_PASS
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/api/v1/admin`)"
       - "traefik.http.routers.admin.entrypoints=web"
-      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/admin"
+      - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
-    depends_on:
-      - minio
     volumes:
       - ./scenario.yml:/usr/app/scenario.yml
       - ./scripts/:/usr/app/scripts/
+    depends_on:
+      mongo:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
 
   manager:
     image: explabs/potee-manager
@@ -110,14 +122,15 @@ services:
       - PYTHONUNBUFFERED=1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.manager.rule=PathPrefix(`/scenario`)"
+      - "traefik.http.routers.manager.rule=PathPrefix(`/api/v1/scenario`)"
       - "traefik.http.routers.manager.entrypoints=web"
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   runner:
     image: explabs/potee-runner
@@ -130,7 +143,10 @@ services:
       - MINIO_ACCESS_KEY=potee
       - MINIO_SECRET_KEY=$MINIO_PASS
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./requirements.txt:/usr/app/requirements.txt
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -141,6 +157,12 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=services
       - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASS
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 20s
+      retries: 3
+
   minio:
     image: quay.io/minio/minio
     container_name: "minio"
@@ -167,8 +189,6 @@ services:
     image: "redis:alpine"
     container_name: "redis"
     command: 'redis-server --requirepass ${REDIS_PASS}'
-    ports:
-      - "6379:6379"
 
   mongo:
     image: mongo:5.0
@@ -177,5 +197,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASS
-    ports:
-      - "27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
