@@ -8,6 +8,8 @@ actions:
 
 services:
   test: # service with name "test"
+    name: Test
+    description: Test service used for validate scenario and runners
     reputation: 1000 # service health points
     domain: test # subdomain name for service
     script: test.py # name of script with all actions for service
@@ -24,6 +26,8 @@ services:
         period: 10m
         cost: 5
   test2: # service name
+    name: Second Test
+    description: Second Test service used for validate scenario and runners
     reputation: 1000 # service health points
     domain: test2 # subdomain name for service
     script: test.py # name of script with all actions for service

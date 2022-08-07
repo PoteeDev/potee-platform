@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"nakateam\",\n    \"password\": \"explabsexplabsexplabs\"\n}",
+							"raw": "{\n    \"username\": \"naliway\",\n    \"password\": \"PoteePassword\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -130,7 +130,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjY1MWM4MGQxLWQxMWItNGI3NC1iZDRhLTVkNTNjMTI4YTlmZSIsImV4cCI6MTY1OTAwNDc3MCwidXNlcl9pZCI6Im5hbGl3YXkifQ.8Jv4zt96bM8NNhxHdE0qGk77oyEMgRF38L1jz6EaFCo",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImQ1MmE5N2I5LTkzZjAtNDdkYy1iODZlLWFhNjU1YmIyZWVkMCIsImV4cCI6MTY1OTg4MTM3MCwidXNlcl9pZCI6Im5hbGl3YXkifQ.RGkWkST8BPAI_56x_zDkLX7dPU0GzymBbZbzoa39E78",
 									"type": "string"
 								}
 							]
@@ -149,6 +149,54 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/entities/services",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"entities",
+								"services"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImVmNDYyOTYyLTQ3MDMtNDAxYy04MjA5LTVkNWE0YjAxMDk0OSIsImV4cCI6MTY1OTg4NzI4MiwidXNlcl9pZCI6Im5hbGl3YXkifQ.Quj9BSV1ylNmiwPjcv4kPNq8Gp-9WvtE7le5px6Yy38",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -385,13 +433,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/admin/teams",
+							"raw": "{{baseUrl}}/admin/entities/list",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"admin",
-								"teams"
+								"entities",
+								"list"
 							]
 						}
 					},
@@ -403,7 +452,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImIwYjY4YzA5LTYyOTgtNDIwNS1iYjI4LWM2Yjk0YjkwNjNkMCIsImV4cCI6MTY1OTY5MzQyMiwidXNlcl9pZCI6ImFkbWluIn0.TqGWpiG-G_2js83mY8IbnNGU9LJNAK8ZjYeGgNw_R8A",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjUyYTVjNGE4LWE5YjMtNGNhNS04MmUzLTAzOWIwMWZhNDU0YyIsImV4cCI6MTY1OTg4MjM5MywidXNlcl9pZCI6ImFkbWluIn0.oIDYJhWmhzMehFNhlUebT137Y3qLyMdj9s8t4ftjS-4",
 						"type": "string"
 					}
 				]
@@ -440,7 +489,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6Ijc0NjRhNWQ0LTUzN2ItNGQxZS1hZjYxLTczMDU2NTQwMDNkMSIsImV4cCI6MTY1OTAwNDcyMCwidXNlcl9pZCI6ImFkbWluIn0.03Cn73xCDNTz8cAvgvxqb3XP9RH4agr7iSbRcQXTUCY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImVmNDYyOTYyLTQ3MDMtNDAxYy04MjA5LTVkNWE0YjAxMDk0OSIsImV4cCI6MTY1OTg4NzI4MiwidXNlcl9pZCI6Im5hbGl3YXkifQ.Quj9BSV1ylNmiwPjcv4kPNq8Gp-9WvtE7le5px6Yy38",
 									"type": "string"
 								}
 							]
