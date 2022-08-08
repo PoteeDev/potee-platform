@@ -25,9 +25,7 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    labels:
-      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
-      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      
 
   auth:
     image: explabs/potee-auth
@@ -39,9 +37,10 @@ services:
       - "traefik.http.routers.auth.entrypoints=web"
       - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
-      - "traefik.http.routers.auth.middlewares=serviceheaders"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.routers.auth.middlewares=auth-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -56,9 +55,10 @@ services:
       - "traefik.http.routers.entities.entrypoints=web"
       - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.entities.middlewares=entities-strip"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
-      - "traefik.http.routers.entities.middlewares=serviceheaders"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.routers.entities.middlewares=entities-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -76,9 +76,10 @@ services:
       - "traefik.http.routers.scores.entrypoints=web"
       - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.scores.middlewares=scores-strip"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
-      - "traefik.http.routers.scores.middlewares=serviceheaders"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.routers.scores.middlewares=scores-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -102,9 +103,11 @@ services:
       - "traefik.http.routers.admin.entrypoints=web"
       - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
-      - "traefik.http.routers.admin.middlewares=serviceheaders"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.routers.admin.middlewares=admin-strip,serviceheaders"
+      
     volumes:
       - ./scenario.yml:/usr/app/scenario.yml
       - ./scripts/:/usr/app/scripts/
@@ -133,9 +136,10 @@ services:
       - "traefik.http.routers.manager.entrypoints=web"
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
-      - "traefik.http.routers.manager.middlewares=serviceheaders"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.routers.manager.middlewares=manager-strip,serviceheaders"
     depends_on:
       rabbitmq:
         condition: service_healthy
