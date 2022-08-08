@@ -38,8 +38,11 @@ services:
       - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
       - "traefik.http.routers.auth.middlewares=auth-strip,serviceheaders"
     depends_on:
       mongo:
@@ -56,8 +59,11 @@ services:
       - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
       - "traefik.http.routers.entities.middlewares=entities-strip,serviceheaders"
     depends_on:
       mongo:
@@ -77,8 +83,11 @@ services:
       - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
       - "traefik.http.routers.scores.middlewares=scores-strip,serviceheaders"
     depends_on:
       mongo:
@@ -104,8 +113,11 @@ services:
       - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
       - "traefik.http.routers.admin.middlewares=admin-strip,serviceheaders"
       
     volumes:
@@ -137,8 +149,11 @@ services:
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
       - "traefik.http.routers.manager.middlewares=manager-strip,serviceheaders"
     depends_on:
       rabbitmq:
