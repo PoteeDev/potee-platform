@@ -25,6 +25,9 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
 
   auth:
     image: explabs/potee-auth
@@ -38,6 +41,7 @@ services:
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+      - "traefik.http.routers.auth.middlewares=serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -54,6 +58,7 @@ services:
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.entities.middlewares=entities-strip"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
+      - "traefik.http.routers.entities.middlewares=serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -73,6 +78,7 @@ services:
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.scores.middlewares=scores-strip"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
+      - "traefik.http.routers.scores.middlewares=serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -98,6 +104,7 @@ services:
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
+      - "traefik.http.routers.admin.middlewares=serviceheaders"
     volumes:
       - ./scenario.yml:/usr/app/scenario.yml
       - ./scripts/:/usr/app/scripts/
@@ -128,6 +135,7 @@ services:
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
       - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
+      - "traefik.http.routers.manager.middlewares=serviceheaders"
     depends_on:
       rabbitmq:
         condition: service_healthy
