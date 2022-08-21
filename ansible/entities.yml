@@ -2,5 +2,7 @@
 - hosts: all
   become: true
   vars_files: vars.yaml
+  gather_facts: no
   roles:
+    - docker
     - deploy

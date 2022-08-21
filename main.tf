@@ -7,21 +7,22 @@ terraform {
 }
 
 provider "yandex" {
-  token     = ""
-  cloud_id  = ""
-  folder_id = ""
+  token     = "AQAAAABftBDJAATuwb2N7USePUgZrl_nu_Fr3Ao"
+  cloud_id  = "b1gecc3098b7di8fk9fm"
+  folder_id = "b1ga705ubqi0n5okur4e"
   zone      = "ru-central1-a"
 }
 module "network" {
-  source = "./modules/network"
+  source = "./terraform/yandex/modules/network"
 }
 module "firewall" {
-  source        = "./modules/firewall"
+  
+  source        = "./terraform/yandex/modules/firewall"
   network_id    = module.network.id
   allowed_cidrs = [var.admin_subnet]
 }
 module "admin-node" {
-  source      = "./modules/admin"
+  source      = "./terraform/yandex/modules/admin"
   name        = "admin"
   username    = var.admin_username
   ssh_key     = "${var.ssh_key_private}.pub"
@@ -34,7 +35,7 @@ module "entity" {
   for_each = {
     for index, vm in var.entities : vm.name => vm
   }
-  source         = "./modules/entity"
+  source         = "./terraform/yandex/modules/entity"
   network_id     = module.network.id
   dns_zone       = module.network.dns_zone_id
   name           = each.value.name
@@ -47,34 +48,14 @@ module "entity" {
 }
 
 resource "null_resource" "admin" {
-  provisioner "remote-exec" {
-    inline = ["ip a"]
-    connection {
-      type        = "ssh"
-      user        = var.admin_username
-      private_key = file(var.ssh_key_private)
-      host        = module.admin-node.external_ip
-    }
-  }
-
   provisioner "local-exec" {
-    command = "ansible-playbook -u ubuntu -i ${module.admin-node.external_ip}, --ssh-extra-args='-o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=no' --private-key ${var.ssh_key_private} ../../ansible/admin.yml"
+    command = "ansible-playbook -u ubuntu -i ${module.admin-node.external_ip}, --ssh-extra-args='-o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=no' --private-key ${var.ssh_key_private} ansible/admin.yml"
   }
 }
 
 resource "null_resource" "entities" {
-  provisioner "remote-exec" {
-    inline = ["ip a"]
-    connection {
-      type        = "ssh"
-      user        = var.admin_username
-      private_key = file(var.ssh_key_private)
-      host        = module.admin-node.external_ip
-    }
-  }
-
   provisioner "local-exec" {
-    command = "ansible-playbook -f ${length(module.entity)} -u ubuntu -i ${join(",", [for index, vm in module.entity : vm.internal_ip])}, --ssh-extra-args='-o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -i ${var.ssh_key_private} -W %h:%p ubuntu@${module.admin-node.external_ip}\"' --private-key ${var.ssh_key_private} ../../ansible/entities.yml"
+    command = "ansible-playbook -f ${length(module.entity)} -u ubuntu -i ${join(",", [for index, vm in module.entity : vm.internal_ip])}, --ssh-extra-args='-o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -i ${var.ssh_key_private} -W %h:%p ubuntu@${module.admin-node.external_ip}\"' --private-key ${var.ssh_key_private} ansible/entities.yml"
   }
 }
 
