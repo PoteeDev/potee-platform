@@ -1,0 +1,94 @@
+- name: Install python3-pip
+  package:
+    update_cache: yes
+    name:
+      - python3-pip
+    state: latest
+
+- name: Install required system packages
+  package:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: latest
+    update_cache: yes
+
+- name: GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: repository docker
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+
+- name: install docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+    update_cache: yes
+
+- name: adding users to group docker
+  user:
+    name: ubuntu
+    groups: docker
+    append: yes
+
+- name: Install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: "755"
+
+- name: Install compose
+  tags: [deploy_tasks]
+  pip:
+    name:
+      - docker
+      - docker-compose
+    executable: pip
+
+- name: Install sysbox deb
+  tags: [deploy_tasks]
+  apt:
+    deb: https://downloads.nestybox.com/sysbox/releases/v0.5.0/sysbox-ce_0.5.0-0.linux_amd64.deb
+
+- name: Edit docker daemon.json
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Restart Docker daemon
+  ansible.builtin.systemd:
+    name: docker.service
+    state: restarted
+
+- name: Create infrastructure dir
+  file:
+    path: /opt/potee/
+    state: directory
+
+- name: Copy infrastructure
+  tags: [deploy_tasks]
+  copy:
+    src: "{{ compose_path }}/docker-compose.yml"
+    dest: /opt/potee/docker-compose.yml
+
+- name: Create and start services
+  tags: [deploy_tasks]
+  community.docker.docker_compose:
+    project_src: /opt/potee/
+  register: output
+
+- ansible.builtin.debug:
+    var: output

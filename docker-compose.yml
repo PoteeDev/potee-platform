@@ -25,6 +25,7 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      
 
   auth:
     image: explabs/potee-auth
@@ -36,8 +37,13 @@ services:
       - "traefik.http.routers.auth.entrypoints=web"
       - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.auth.middlewares=auth-strip"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
+      - "traefik.http.routers.auth.middlewares=auth-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -52,8 +58,13 @@ services:
       - "traefik.http.routers.entities.entrypoints=web"
       - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.entities.middlewares=entities-strip"
       - "traefik.http.services.entities.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
+      - "traefik.http.routers.entities.middlewares=entities-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -71,8 +82,13 @@ services:
       - "traefik.http.routers.scores.entrypoints=web"
       - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.scores.middlewares=scores-strip"
       - "traefik.http.services.scores.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
+      - "traefik.http.routers.scores.middlewares=scores-strip,serviceheaders"
     depends_on:
       mongo:
         condition: service_healthy
@@ -96,8 +112,14 @@ services:
       - "traefik.http.routers.admin.entrypoints=web"
       - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.admin.middlewares=admin-strip"
       - "traefik.http.services.admin.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
+      - "traefik.http.routers.admin.middlewares=admin-strip,serviceheaders"
+      
     volumes:
       - ./scenario.yml:/usr/app/scenario.yml
       - ./scripts/:/usr/app/scripts/
@@ -124,10 +146,15 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.manager.rule=PathPrefix(`/api/v1/scenario`)"
       - "traefik.http.routers.manager.entrypoints=web"
-      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/scenario"
+      - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
-      - "traefik.http.routers.manager.middlewares=manager-strip"
       - "traefik.http.services.manager.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
+      - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.serviceheaders.headers.addvaryheader=true"
+      - "traefik.http.routers.manager.middlewares=manager-strip,serviceheaders"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -167,6 +194,9 @@ services:
     image: quay.io/minio/minio
     container_name: "minio"
     command: server --console-address ":9001" /data
+    expose:
+      - "9000"
+      - "9001"
     environment:
       MINIO_ROOT_USER: potee
       MINIO_ROOT_PASSWORD: $MINIO_PASS
@@ -200,3 +230,38 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s
+
+  openvpn:
+    image: flant/ovpn-admin:openvpn-1.7.5
+    container_name: openvpn
+    command: /etc/openvpn/setup/configure.sh
+    environment:
+      OVPN_SERVER_NET: "192.168.100.0"
+      OVPN_SERVER_MASK: "255.255.255.0"
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 7777:1194 # for openvpn
+      - 9000:9000 # for ovpn-admin because of network_mode
+    volumes:
+      - ./openvpn/easyrsa_master:/etc/openvpn/easyrsa
+      - ./openvpn/ccd_master:/etc/openvpn/ccd
+
+  ovpn-admin:
+    image: flant/ovpn-admin:1.7.5
+    container_name: ovpn-admin
+    command: /app/ovpn-admin
+    environment:
+      OVPN_LISTEN_PORT: "9000"
+      OVPN_DEBUG: "True"
+      OVPN_VERBOSE: "True"
+      OVPN_NETWORK: "192.168.100.0/24"
+      EASYRSA_PATH: "/mnt/easyrsa"
+      OVPN_SERVER: "${PUBLIC_IP}:7777:tcp"
+      OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
+      OVPN_CCD: "True"
+      OVPN_CCD_PATH: "/mnt/ccd"
+    network_mode: service:openvpn
+    volumes:
+      - ./openvpn/easyrsa_master:/mnt/easyrsa
+      - ./openvpn/ccd_master:/mnt/ccd

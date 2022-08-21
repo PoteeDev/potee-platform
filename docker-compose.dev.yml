@@ -236,3 +236,38 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s
+
+  openvpn:
+    image: flant/ovpn-admin:openvpn-1.7.5
+    container_name: openvpn
+    command: /etc/openvpn/setup/configure.sh
+    environment:
+      OVPN_SERVER_NET: "192.168.100.0"
+      OVPN_SERVER_MASK: "255.255.255.0"
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 7777:1194 # for openvpn
+      - 9000:9000 # for ovpn-admin because of network_mode
+    volumes:
+      - ./openvpn/easyrsa_master:/etc/openvpn/easyrsa
+      - ./openvpn/ccd_master:/etc/openvpn/ccd
+
+  ovpn-admin:
+    image: flant/ovpn-admin:1.7.5
+    container_name: ovpn-admin
+    command: /app/ovpn-admin
+    environment:
+      OVPN_LISTEN_PORT: "9000"
+      OVPN_DEBUG: "True"
+      OVPN_VERBOSE: "True"
+      OVPN_NETWORK: "192.168.100.0/24"
+      EASYRSA_PATH: "/mnt/easyrsa"
+      OVPN_SERVER: "${PUBLIC_IP}:7777:tcp"
+      OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
+      OVPN_CCD: "True"
+      OVPN_CCD_PATH: "/mnt/ccd"
+    network_mode: service:openvpn
+    volumes:
+      - ./openvpn/easyrsa_master:/mnt/easyrsa
+      - ./openvpn/ccd_master:/mnt/ccd

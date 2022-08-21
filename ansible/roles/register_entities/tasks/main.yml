@@ -1,0 +1,28 @@
+- include_vars:
+    file: config.tfvars.json
+    name: config
+
+- name: Register users
+  uri:
+    url: "{{ base_url }}/api/v1/admin/entities/registration"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ token }}"
+    body_format: json
+    body:
+      name: "{{ item.name }}"
+      password: "PoteePassword"
+      subnet: "{{ item.cidr | ipaddr('network') }}"
+      visible: true
+    return_content: true
+    status_code: 200
+  loop: "{{ config.entities }}"
+
+- name: Generate vpn
+  uri:
+    url: "{{ base_url }}/api/v1/admin/entities/generate/vpn "
+    method: GET
+    headers:
+      Authorization: "Bearer {{ token }}"
+    return_content: true
+    status_code: 200

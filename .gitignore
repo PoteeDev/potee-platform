@@ -1,0 +1,13 @@
+*.tfstate
+*.tfstate.*
+*.hcl
+.terraform/
+id_rsa
+id_rsa.pub
+
+.env
+.vscode
+
+openvpn/
+
+__pycache__/

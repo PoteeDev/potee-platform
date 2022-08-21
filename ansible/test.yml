@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  become: true
+  connection: local
+  gather_facts: false
+  vars:
+    base_url: "{{ url_schema }}://{{ inventory_hostname }}"
+    token: "{{ lookup('token', base_url=base_url, username=username, password=password) }}"
+  vars_files: vars.yaml
+  
+  tasks:
+  roles:
+    - deploy_admin
+    - register_entities
+      

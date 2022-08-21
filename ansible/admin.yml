@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  vars_files: vars.yaml
+  vars:
+    base_url: "{{ url_schema }}://{{ inventory_hostname }}"
+    token: "{{ lookup('token', base_url=base_url, username=username, password=password) }}"
+  roles:
+    - deploy_admin
+    - register_entities

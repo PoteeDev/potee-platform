@@ -1,0 +1,5 @@
+compose_path: ../infrastructure/
+admin_path: ../
+url_schema: "http"
+username: admin
+password: admin
