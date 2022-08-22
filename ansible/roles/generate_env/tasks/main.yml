@@ -1,0 +1,8 @@
+- name: Generate .env file
+  template:
+    src: .env.j2
+    dest: "{{ admin_path }}/.env"
+
+- name: Admin Credentials
+  debug:
+    msg: "admin:{{ password }}"

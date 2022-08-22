@@ -16,6 +16,11 @@ variable "admin_subnet" {
   default = "10.0.0.0/24"
 }
 
+variable "public_domain" {
+  type = string
+  default = "defence.potee.ru"
+}
+
 variable "entities" {
   type = list(object({
     name = string

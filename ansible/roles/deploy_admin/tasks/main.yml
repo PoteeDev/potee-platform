@@ -9,15 +9,11 @@
     src: "{{ admin_path }}/docker-compose.yml"
     dest: /opt/potee/docker-compose.yml
 
-- name: Copy Scenario file
-  tags: [deploy_tasks]
-  copy:
-    src: "{{ admin_path }}/.env"
+
+- name: Generate .env file
+  template:
+    src: .env.j2
     dest: /opt/potee/.env
-- name: add PUBLIC_IP to .env
-  lineinfile:
-    path: /opt/potee/.env
-    line: "PUBLIC_IP={{ inventory_hostname }}"
 
 - name: Copy Scenario file
   tags: [deploy_tasks]
@@ -44,5 +40,5 @@
     project_src: /opt/potee/
   register: output
 
-- ansible.builtin.debug:
+- debug:
     var: output

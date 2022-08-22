@@ -16,19 +16,22 @@ module "network" {
   source = "./terraform/yandex/modules/network"
 }
 module "firewall" {
-  
+
   source        = "./terraform/yandex/modules/firewall"
   network_id    = module.network.id
   allowed_cidrs = [var.admin_subnet]
 }
 module "admin-node" {
-  source      = "./terraform/yandex/modules/admin"
-  name        = "admin"
-  username    = var.admin_username
-  ssh_key     = "${var.ssh_key_private}.pub"
-  network_id  = module.network.id
-  cidr_blocks = [var.admin_subnet]
-  ip_address  = var.admin_ip
+  source             = "./terraform/yandex/modules/admin"
+  name               = "admin"
+  username           = var.admin_username
+  ssh_key            = "${var.ssh_key_private}.pub"
+  dns_public_zone_id = module.network.dns_public_zone_id
+  public_domain      = var.public_domain
+  domains            = ["vpn", "api", "minio", "traefik"]
+  network_id         = module.network.id
+  cidr_blocks        = [var.admin_subnet]
+  ip_address         = var.admin_ip
 }
 
 module "entity" {

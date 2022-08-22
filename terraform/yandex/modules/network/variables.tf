@@ -7,6 +7,10 @@ variable "domain" {
   type    = string
   default = "space"
 }
+variable "public_domain" {
+  type = string
+  default = "potee.ru"
+}
 
 variable "nat_cidr" {
   type    = string

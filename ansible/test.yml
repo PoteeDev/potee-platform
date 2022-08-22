@@ -4,12 +4,17 @@
   connection: local
   gather_facts: false
   vars:
-    base_url: "{{ url_schema }}://{{ inventory_hostname }}"
-    token: "{{ lookup('token', base_url=base_url, username=username, password=password) }}"
-  vars_files: vars.yaml
+    domain: "test"
+    admin_path: ../
+    password: "{{ lookup('password','/tmp/passwordfile chars=ascii_letters,digits length=32') }}"
+    access_secret: "{{ lookup('password','/tmp/passwordfile chars=ascii_lowercase,digits length=32') }}"
+    refresh_secret: "{{ lookup('password','/tmp/passwordfile chars=ascii_lowercase,digits length=32') }}"
   
   tasks:
-  roles:
-    - deploy_admin
-    - register_entities
+    - debug:
+        msg: "{{ password }}"
+    - debug:
+        msg: "{{ password | password_hash }}"
+    - debug:
+        msg: "{{ password }}"
       

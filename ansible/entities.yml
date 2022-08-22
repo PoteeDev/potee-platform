@@ -1,7 +1,9 @@
 ---
 - hosts: all
   become: true
-  vars_files: vars.yaml
+  vars_files: variables.yml
+  vars:
+    compose_path: ../infrastructure/
   gather_facts: no
   roles:
     - docker

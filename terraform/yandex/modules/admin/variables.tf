@@ -1,19 +1,34 @@
-variable network_id {
-    type = string
+variable "network_id" {
+  type = string
+}
+
+variable "dns_public_zone_id" {
+  type = string
 }
 
 variable "ssh_key" {
-  type = string
+  type    = string
   default = "./id_rsa.pub"
 }
 
 variable "name" {
-  type = string
+  type    = string
   default = "admin"
 }
 
+
+variable "public_domain" {
+  type    = string
+  default = "potee.ru"
+}
+
+variable "domains" {
+  type    = list(string)
+  default = ["vpn"]
+}
+
 variable "username" {
-  type = string
+  type    = string
   default = "ubuntu"
 }
 

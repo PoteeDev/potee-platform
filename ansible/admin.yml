@@ -1,12 +1,22 @@
 ---
 - hosts: all
   become: true
-  vars_files: vars.yaml
+  vars_files: variables.yml
   gather_facts: no
   vars:
-    base_url: "{{ url_schema }}://{{ inventory_hostname }}"
+    username: admin
+    password: "{{ lookup('password','/tmp/passwordfile chars=ascii_letters,digits length=32') }}"
+    admin_path: ../
+    base_url: "{{ url_schema }}://api.{{ domain }}"
     token: "{{ lookup('token', base_url=base_url, username=username, password=password) }}"
+    access_secret: "{{ lookup('password','/tmp/passwordfile chars=ascii_lowercase,digits length=32') }}"
+    refresh_secret: "{{ lookup('password','/tmp/passwordfile chars=ascii_lowercase,digits length=32') }}"
   roles:
     - docker
     - deploy_admin
     - register_entities
+
+  tasks:
+    - name: Admin Credentials
+      debug:
+        msg: "admin:{{ password }}"
