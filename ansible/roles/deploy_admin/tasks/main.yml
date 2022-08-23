@@ -34,6 +34,12 @@
     src: "{{ admin_path }}/scenario.yml"
     dest: /opt/potee/scenario.yml
 
+- name: Generate passwd file for traefik
+  htpasswd:
+    path: "/opt/potee/.htpasswd"
+    name: "admin"
+    password: "{{ password }}"
+
 - name: Create and start services
   tags: [deploy_tasks]
   community.docker.docker_compose:

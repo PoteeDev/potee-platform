@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: 127.0.0.1
   become: true
   connection: local
   gather_facts: false
@@ -14,7 +14,13 @@
     - debug:
         msg: "{{ password }}"
     - debug:
-        msg: "{{ password | password_hash }}"
+        msg: "{{ password | hash() }}"
     - debug:
         msg: "{{ password }}"
+    
+    - name: Generate passwd file for traefik
+      htpasswd:
+        path: "../.htpasswd"
+        name: "admin"
+        password: "{{ password }}"
       

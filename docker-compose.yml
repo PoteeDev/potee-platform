@@ -15,26 +15,34 @@ services:
     image: traefik:v2.6
     container_name: "traefik"
     command:
-      #- "--log.level=DEBUG"
+      - "--log.level=DEBUG"
+      - "--api=true"
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
       - "--certificatesresolvers.tlsresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.tlsresolver.acme.email=ivanhahanov13@gmail.com"
       - "--certificatesresolvers.tlsresolver.acme.storage=acme.json"
     ports:
+      - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./.htpasswd:/etc/traefik/.htpasswd"
     
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.middlewares.auth.basicauth.users=${BASIC_AUTH_USER}"
-      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.auth.entrypoints=websecure"
+      - "traefik.http.middlewares.auth.basicauth.usersfile=/etc/traefik/.htpasswd"
+      - "traefik.http.routers.dashboard.middlewares=auth"
       
 
   auth:
@@ -44,7 +52,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/auth`)"
-      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.routers.auth.entrypoints=websecure"
       - "traefik.http.routers.auth.tls.certresolver=tlsresolver"
       - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
@@ -66,7 +74,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.entities.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/entities`)"
-      - "traefik.http.routers.entities.entrypoints=web"
+      - "traefik.http.routers.entities.entrypoints=websecure"
       - "traefik.http.routers.entities.tls.certresolver=tlsresolver"
       - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
@@ -86,7 +94,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.scores.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/scores`)"
-      - "traefik.http.routers.scores.entrypoints=web"
+      - "traefik.http.routers.scores.entrypoints=websecure"
       - "traefik.http.routers.scores.tls.certresolver=tlsresolver"
       - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
@@ -112,7 +120,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.admin.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/admin`)"
-      - "traefik.http.routers.admin.entrypoints=web"
+      - "traefik.http.routers.admin.entrypoints=websecure"
       - "traefik.http.routers.admin.tls.certresolver=tlsresolver"
       - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
@@ -144,7 +152,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.manager.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/scenario`)"
-      - "traefik.http.routers.manager.entrypoints=web"
+      - "traefik.http.routers.manager.entrypoints=websecure"
       - "traefik.http.routers.manager.tls.certresolver=tlsresolver"
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
@@ -205,8 +213,8 @@ services:
       retries: 3
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.minio.rule=Host(`minio.${DOMAIN}`) && PathPrefix(`/api/v1/scenario`)"
-      - "traefik.http.routers.minio.entrypoints=web"
+      - "traefik.http.routers.minio.rule=Host(`minio.${DOMAIN}`)"
+      - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.tls.certresolver=tlsresolver"
       - "traefik.http.services.minio.loadbalancer.server.port=9000"
 
@@ -248,7 +256,7 @@ services:
       - "traefik.http.routers.openvpn.rule=Host(`vpn.${DOMAIN}`)"
       - "traefik.http.routers.openvpn.tls.certresolver=tlsresolver"
       - "traefik.http.routers.openvpn.middlewares=auth"
-      - "traefik.http.routers.openvpn.entrypoints=web"
+      - "traefik.http.routers.openvpn.entrypoints=websecure"
       - "traefik.http.services.openvpn.loadbalancer.server.port=9000"
 
   ovpn-admin:

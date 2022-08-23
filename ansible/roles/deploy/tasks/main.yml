@@ -27,6 +27,12 @@
     src: "{{ compose_path }}/docker-compose.yml"
     dest: /opt/potee/docker-compose.yml
 
+- name: Replace ip address
+  replace:
+    path: "/opt/potee/docker-compose.yml"
+    regexp: '\.x\.'
+    replace: '.{{ inventory_hostname.split(".")[-2] }}.'
+
 - name: Create and start services
   tags: [deploy_tasks]
   community.docker.docker_compose:

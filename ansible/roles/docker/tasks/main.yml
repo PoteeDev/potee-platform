@@ -53,10 +53,11 @@
     dest: /usr/local/bin/docker-compose
     mode: "755"
 
-- name: Install compose
+- name: Install pip packages
   tags: [deploy_tasks]
   pip:
     name:
       - docker
       - docker-compose
+      - passlib
     executable: pip
