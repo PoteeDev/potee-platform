@@ -1,0 +1,43 @@
+- name: Install sysbox deb
+  tags: [deploy_tasks]
+  apt:
+    deb: https://downloads.nestybox.com/sysbox/releases/v0.5.0/sysbox-ce_0.5.0-0.linux_amd64.deb
+
+- name: Edit docker daemon.json
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Restart Docker daemon
+  ansible.builtin.systemd:
+    name: docker.service
+    state: restarted
+
+- name: Create infrastructure dir
+  file:
+    path: /opt/potee/
+    state: directory
+
+- name: Copy infrastructure
+  tags: [deploy_tasks]
+  copy:
+    src: "{{ compose_path }}/docker-compose.yml"
+    dest: /opt/potee/docker-compose.yml
+
+- name: Replace ip address
+  replace:
+    path: "/opt/potee/docker-compose.yml"
+    regexp: '\.x\.'
+    replace: '.{{ inventory_hostname.split(".")[-2] }}.'
+
+- name: Create and start services
+  tags: [deploy_tasks]
+  community.docker.docker_compose:
+    project_src: /opt/potee/
+  register: output
+
+- ansible.builtin.debug:
+    var: output

@@ -3,7 +3,7 @@ variable "admin_username" {
   default = "ubuntu"
 }
 variable "ssh_key_private" {
-  type   = string
+  type    = string
   default = "./id_rsa"
 }
 variable "admin_ip" {
@@ -17,31 +17,27 @@ variable "admin_subnet" {
 }
 
 variable "public_domain" {
-  type = string
+  type    = string
   default = "defence.potee.ru"
+}
+
+variable "services" {
+  type = list(string)
 }
 
 variable "entities" {
   type = list(object({
     name = string
     cidr = string
-    services = list(object({
-      name = string
-      ip   = string
-    }))
+    ip   = string
   }))
   default = [{
     name = "naliway"
     cidr = "10.0.1.0/24"
+    ip   = "10.0.1.10"
     services = [
-      {
-        name = "admin"
-        ip   = "10.0.1.10"
-      },
-      {
-        name = "dev"
-        ip   = "10.0.1.11"
-      }
+      "admin",
+      "dev"
     ]
   }]
 }

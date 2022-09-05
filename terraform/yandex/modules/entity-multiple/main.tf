@@ -21,10 +21,13 @@ resource "yandex_compute_instance" "vm" {
     }
   }
 
-  network_interface {
+  dynamic "network_interface" {
+    for_each = var.services.*.ip
+    content {
       subnet_id  = yandex_vpc_subnet.entity-subnet.id
-      ip_address = var.ip_address
+      ip_address = network_interface.value
       security_group_ids = var.security_group
+    }
   }
 
   metadata = {
@@ -41,10 +44,12 @@ resource "yandex_vpc_subnet" "entity-subnet" {
 }
 
 resource "yandex_dns_recordset" "rs" {
-  for_each = toset(var.services)
+  for_each = {
+    for index, srv in var.services : srv.name => srv
+  }
   zone_id = var.dns_zone
-  name    = "${each.value}.${var.name}.${var.domain}."
+  name    = "${each.value.name}.${var.name}.${var.domain}."
   type    = "A"
   ttl     = 200
-  data    = [var.ip_address]
+  data    = [each.value.ip]
 }

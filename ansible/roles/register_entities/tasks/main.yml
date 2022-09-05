@@ -1,5 +1,5 @@
 - include_vars:
-    file: config.tfvars.json
+    file: ../config.tfvars.json
     name: config
 
 - name: Register users

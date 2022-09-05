@@ -15,7 +15,7 @@ services:
     image: traefik:v2.6
     container_name: "traefik"
     command:
-      - "--log.level=DEBUG"
+      # - "--log.level=DEBUG"
       - "--api=true"
       - "--api.dashboard=true"
       - "--providers.docker=true"
@@ -40,7 +40,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.auth.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=tlsresolver"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
       - "traefik.http.middlewares.auth.basicauth.usersfile=/etc/traefik/.htpasswd"
       - "traefik.http.routers.dashboard.middlewares=auth"
       

@@ -44,7 +44,8 @@ module "entity" {
   ssh_key        = "${var.ssh_key_private}.pub"
   subnet_name    = "${each.value.name}-subnet"
   cidr_blocks    = [each.value.cidr]
-  services       = each.value.services
+  ip_address     = each.value.ip
+  services       = var.services
   nat_route      = module.network.nat_route_id
   security_group = [module.firewall.admin_security_group]
 }

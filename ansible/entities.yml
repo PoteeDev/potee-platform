@@ -3,7 +3,8 @@
   become: true
   vars_files: variables.yml
   vars:
-    compose_path: ../infrastructure/
+    tasks_path: ../services/
+    username: ubuntu
   gather_facts: no
   roles:
     - docker

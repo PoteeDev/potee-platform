@@ -23,14 +23,15 @@ variable "subnet_name" {
   type = string
 }
 
-variable "ip_address" {
-  type = string
-  default = "10.0.1.10"
-}
-
 variable "services" {
-  type = list(string)
-  default = ["dev"]
+  type = list(object({
+    ip   = string
+    name = string
+  }))
+  default = [{
+    name = "dev"
+    ip   = "10.0.1.10"
+  }]
 }
 
 variable "domain" {

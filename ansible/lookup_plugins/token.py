@@ -18,7 +18,7 @@ DOCUMENTATION = """
 
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
-from ansible.errors import AnsibleError, AnsibleParserError
+from ansible.errors import AnsibleError
 import requests
 
 display = Display()
@@ -33,7 +33,7 @@ class LookupModule(LookupBase):
             "username": username,
             "password": password,
         }
-        r = requests.post(f"{base_url}/api/v1/auth/login", json=data)
+        r = requests.post(f"{base_url}/api/v1/auth/login", json=data, verify=False)
         # retrieve cookies from session an return them
         if r.status_code != 200:
           raise AnsibleError(r.text)
