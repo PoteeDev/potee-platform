@@ -4,6 +4,7 @@
   vars_files: variables.yml
   gather_facts: no
   vars:
+    email: ivanhahanov13@gmail.com
     username: admin
     password: "{{ lookup('password','/tmp/passwordfile chars=ascii_letters,digits length=32') }}"
     admin_path: ../

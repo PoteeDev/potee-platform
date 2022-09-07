@@ -34,10 +34,7 @@
 
 - name: install docker
   apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+    name: docker-ce
     state: latest
     update_cache: yes
 

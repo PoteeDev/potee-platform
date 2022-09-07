@@ -27,7 +27,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
       - "--certificatesresolvers.tlsresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.tlsresolver.acme.email=ivanhahanov13@gmail.com"
+      - "--certificatesresolvers.tlsresolver.acme.email=${EMAIL}"
       - "--certificatesresolvers.tlsresolver.acme.storage=acme.json"
     ports:
       - "80:80"
@@ -252,6 +252,7 @@ services:
     volumes:
       - ./openvpn/easyrsa_master:/etc/openvpn/easyrsa
       - ./openvpn/ccd_master:/etc/openvpn/ccd
+      - ./openvpn/setup/openvpn.conf:/etc/openvpn/setup/openvpn.conf
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.openvpn.rule=Host(`vpn.${DOMAIN}`)"

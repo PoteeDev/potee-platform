@@ -9,7 +9,6 @@
     src: "{{ admin_path }}/docker-compose.yml"
     dest: /opt/potee/docker-compose.yml
 
-
 - name: Generate .env file
   template:
     src: .env.j2
@@ -39,6 +38,16 @@
     path: "/opt/potee/.htpasswd"
     name: "admin"
     password: "{{ password }}"
+
+- name: Create openvpn dir
+  file:
+    path: /opt/potee/openvpn/setup/
+    state: directory
+
+- name: Create openvpn config
+  copy:
+    src: openvpn.conf
+    dest: /opt/potee/openvpn/setup/openvpn.conf
 
 - name: Create and start services
   tags: [deploy_tasks]
