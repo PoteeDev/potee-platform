@@ -6,7 +6,7 @@ services:
     image: explabs/potee-deploy
     command: apply
     environment:
-      YC_TOKEN: y0_AgAAAABftBDJAATuwQAAAADM3-DwmlaDlVKuSR2svvh3C2YcrN4xyQ0
+      YC_TOKEN: <Yandex OAuth Token>
       # YC_CLOUD_ID: xxx
       # YC_FOLDER_ID: xxx
     volumes:
