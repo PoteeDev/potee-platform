@@ -217,7 +217,7 @@ services:
       - "traefik.http.routers.minio.rule=Host(`minio.${DOMAIN}`)"
       - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.tls.certresolver=tlsresolver"
-      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+      - "traefik.http.services.minio.loadbalancer.server.port=9001"
 
   redis:
     image: "redis:alpine"

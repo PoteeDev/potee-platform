@@ -1,0 +1,55 @@
+
+PLAY [vms] *********************************************************************
+
+TASK [docker : Wait 600 seconds for target connection to become reachable/usable] ***
+ok: [10.0.2.10]
+ok: [10.0.1.10]
+
+TASK [docker : Gather facts] ***************************************************
+ok: [10.0.1.10]
+ok: [10.0.2.10]
+
+TASK [docker : Install python3-pip] ********************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [docker : Install required system packages] *******************************
+changed: [10.0.2.10]
+changed: [10.0.1.10]
+
+TASK [docker : GPG key] ********************************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [docker : repository docker] **********************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [docker : install docker] *************************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [docker : adding users to group docker] ***********************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [docker : Install docker-compose] *****************************************
+changed: [10.0.2.10]
+changed: [10.0.1.10]
+
+TASK [docker : Install pip packages] *******************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+TASK [deploy : Create infrastructure dir] **************************************
+changed: [10.0.2.10]
+changed: [10.0.1.10]
+
+TASK [deploy : Copy infrastructure] ********************************************
+changed: [10.0.1.10]
+changed: [10.0.2.10]
+
+PLAY RECAP *********************************************************************
+10.0.1.10                  : ok=12   changed=10   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+10.0.2.10                  : ok=12   changed=10   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

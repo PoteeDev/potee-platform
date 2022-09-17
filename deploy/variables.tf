@@ -4,7 +4,7 @@ variable "admin_username" {
 }
 variable "ssh_key_private" {
   type    = string
-  default = "./id_rsa"
+  default = "./keys/id_rsa"
 }
 variable "admin_ip" {
   type    = string

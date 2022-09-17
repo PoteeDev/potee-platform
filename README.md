@@ -1,6 +1,15 @@
 # Potee Platform
 
 ## Deploy to cloud
+### Deploy with docker compose
+```
+docker compose -f docker-compose.deploy.yml run deploy apply
+```
+#### Destroy
+```
+docker compose -f docker-compose.deploy.yml run deploy destroy
+```
+
 ### Generate ssh keypair
 ```
 ssh-keygen

@@ -1,0 +1,637 @@
+
+PLAY [admin] *******************************************************************
+
+TASK [docker : Wait 600 seconds for target connection to become reachable/usable] ***
+ok: [51.250.4.128]
+
+TASK [docker : Gather facts] ***************************************************
+ok: [51.250.4.128]
+
+TASK [docker : Install python3-pip] ********************************************
+changed: [51.250.4.128]
+
+TASK [docker : Install required system packages] *******************************
+changed: [51.250.4.128]
+
+TASK [docker : GPG key] ********************************************************
+changed: [51.250.4.128]
+
+TASK [docker : repository docker] **********************************************
+changed: [51.250.4.128]
+
+TASK [docker : install docker] *************************************************
+changed: [51.250.4.128]
+
+TASK [docker : adding users to group docker] ***********************************
+changed: [51.250.4.128]
+
+TASK [docker : Install docker-compose] *****************************************
+changed: [51.250.4.128]
+
+TASK [docker : Install pip packages] *******************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Create services dir] **************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Copy Compose File] ****************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Generate .env file] ***************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Copy Scenario file] ***************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Copy scripts] *********************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Copy Scenario file] ***************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Generate passwd file for traefik] *************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Create openvpn dir] ***************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Create openvpn config] ************************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : Create and start services] ********************************
+changed: [51.250.4.128]
+
+TASK [deploy_admin : debug] ****************************************************
+ok: [51.250.4.128] => {
+    "output": {
+        "changed": true,
+        "failed": false,
+        "services": {
+            "admin": {
+                "admin": {
+                    "cmd": [],
+                    "image": "explabs/potee-admin",
+                    "labels": {
+                        "com.docker.compose.config-hash": "dd4fbb68c5e2f3cca4ef5de8e784c9122818b7cab5167cccd099e7bbc5026881",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "admin",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.admin-strip.stripprefix.forceslash": "true",
+                        "traefik.http.middlewares.admin-strip.stripprefix.prefixes": "/api/v1/admin",
+                        "traefik.http.routers.admin.entrypoints": "websecure",
+                        "traefik.http.routers.admin.middlewares": "admin-strip,serviceheaders",
+                        "traefik.http.routers.admin.rule": "Host(`api.defence.potee.ru`) && PathPrefix(`/api/v1/admin`)",
+                        "traefik.http.routers.admin.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.admin.loadbalancer.server.port": "8080"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.13",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "edc7ec5662ea",
+                                "admin"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:0d"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "auth": {
+                "auth": {
+                    "cmd": [],
+                    "image": "explabs/potee-auth",
+                    "labels": {
+                        "com.docker.compose.config-hash": "531e8e5885f12d78303f0f77e8eaaf5685e3bc8141e81e2f003bb541306df562",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "auth",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.auth-strip.stripprefix.forceslash": "true",
+                        "traefik.http.middlewares.auth-strip.stripprefix.prefixes": "/api/v1/auth",
+                        "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders": "Content-Type",
+                        "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods": "GET,OPTIONS,PUT,POST,DELETE",
+                        "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist": "*",
+                        "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage": "100",
+                        "traefik.http.middlewares.serviceheaders.headers.addvaryheader": "true",
+                        "traefik.http.routers.auth.entrypoints": "websecure",
+                        "traefik.http.routers.auth.middlewares": "auth-strip,serviceheaders",
+                        "traefik.http.routers.auth.rule": "Host(`api.defence.potee.ru`) && PathPrefix(`/api/v1/auth`)",
+                        "traefik.http.routers.auth.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.auth.loadbalancer.server.port": "8080"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.12",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "auth",
+                                "69c0979067f6"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:0c"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "entities": {
+                "entities": {
+                    "cmd": [],
+                    "image": "explabs/potee-entities",
+                    "labels": {
+                        "com.docker.compose.config-hash": "e2d6ac4776342b162a5e5253450638ac79d45be3ccc98a1ffa2cd464c9f989dc",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "entities",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.entities-strip.stripprefix.forceslash": "true",
+                        "traefik.http.middlewares.entities-strip.stripprefix.prefixes": "/api/v1/entities",
+                        "traefik.http.routers.entities.entrypoints": "websecure",
+                        "traefik.http.routers.entities.middlewares": "entities-strip,serviceheaders",
+                        "traefik.http.routers.entities.rule": "Host(`api.defence.potee.ru`) && PathPrefix(`/api/v1/entities`)",
+                        "traefik.http.routers.entities.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.entities.loadbalancer.server.port": "8080"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.10",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "entities",
+                                "6619e6ac485b"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:0a"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "manager": {
+                "manager": {
+                    "cmd": [
+                        "python3",
+                        "server.py"
+                    ],
+                    "image": "explabs/potee-manager",
+                    "labels": {
+                        "com.docker.compose.config-hash": "d0ed3e811d4c16ae3c70da78eea0fbc3ce6641dff4801da11007dcf00c47a5ea",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "manager",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.manager-strip.stripprefix.forceslash": "true",
+                        "traefik.http.middlewares.manager-strip.stripprefix.prefixes": "/api/v1/scenario",
+                        "traefik.http.routers.manager.entrypoints": "websecure",
+                        "traefik.http.routers.manager.middlewares": "manager-strip,serviceheaders",
+                        "traefik.http.routers.manager.rule": "Host(`api.defence.potee.ru`) && PathPrefix(`/api/v1/scenario`)",
+                        "traefik.http.routers.manager.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.manager.loadbalancer.server.port": "8000"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.9",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "manager",
+                                "f49bff78322a"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:09"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "minio": {
+                "minio": {
+                    "cmd": [
+                        "server",
+                        "--console-address",
+                        ":9001",
+                        "/data"
+                    ],
+                    "image": "quay.io/minio/minio",
+                    "labels": {
+                        "architecture": "x86_64",
+                        "build-date": "2022-09-06T17:24:37.740294",
+                        "com.docker.compose.config-hash": "cca5afecb239ecf4aa2266af09189927aef59a1e19adc576345a94e90ec470d9",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "minio",
+                        "com.docker.compose.version": "1.29.2",
+                        "com.redhat.build-host": "cpt-1003.osbs.prod.upshift.rdu2.redhat.com",
+                        "com.redhat.component": "ubi8-minimal-container",
+                        "com.redhat.license_terms": "https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI",
+                        "description": "MinIO object storage is fundamentally different. Designed for performance and the S3 API, it is 100% open-source. MinIO is ideal for large, private cloud environments with stringent security requirements and delivers mission-critical availability across a diverse range of workloads.",
+                        "distribution-scope": "public",
+                        "io.k8s.description": "The Universal Base Image Minimal is a stripped down image that uses microdnf as a package manager. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.",
+                        "io.k8s.display-name": "Red Hat Universal Base Image 8 Minimal",
+                        "io.openshift.expose-services": "",
+                        "io.openshift.tags": "minimal rhel8",
+                        "maintainer": "MinIO Inc <dev@min.io>",
+                        "name": "MinIO",
+                        "release": "RELEASE.2022-09-17T00-09-45Z",
+                        "summary": "MinIO is a High Performance Object Storage, API compatible with Amazon S3 cloud storage service.",
+                        "traefik.enable": "true",
+                        "traefik.http.routers.minio.entrypoints": "websecure",
+                        "traefik.http.routers.minio.rule": "Host(`minio.defence.potee.ru`)",
+                        "traefik.http.routers.minio.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.minio.loadbalancer.server.port": "9001",
+                        "url": "https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8-minimal/images/8.6-941",
+                        "vcs-ref": "50293e4ba66ca2194d8ee5a149a665cb9a375c71",
+                        "vcs-type": "git",
+                        "vendor": "MinIO Inc <dev@min.io>",
+                        "version": "RELEASE.2022-09-17T00-09-45Z"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.5",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "minio",
+                                "911d5ed438c1"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:05"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "mongo": {
+                "mongo": {
+                    "cmd": [
+                        "mongod"
+                    ],
+                    "image": "mongo:5.0",
+                    "labels": {
+                        "com.docker.compose.config-hash": "9d6834a98d3122759db40f69d4a4689c315c1591b82027cb12856517f6282ab4",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "mongo",
+                        "com.docker.compose.version": "1.29.2"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.7",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "7e3c097d02ea",
+                                "mongo"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:07"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "openvpn": {
+                "openvpn": {
+                    "cmd": [
+                        "/etc/openvpn/setup/configure.sh"
+                    ],
+                    "image": "flant/ovpn-admin:openvpn-1.7.5",
+                    "labels": {
+                        "com.docker.compose.config-hash": "48db7a28ead5541a16da10e599ffb3cb46c521b7b3511adf9217037234c09423",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "openvpn",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.routers.openvpn.entrypoints": "websecure",
+                        "traefik.http.routers.openvpn.middlewares": "auth",
+                        "traefik.http.routers.openvpn.rule": "Host(`vpn.defence.potee.ru`)",
+                        "traefik.http.routers.openvpn.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.openvpn.loadbalancer.server.port": "9000"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.2",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "2b4a62442cba",
+                                "openvpn"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:02"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "ovpn-admin": {
+                "ovpn-admin": {
+                    "cmd": [
+                        "/app/ovpn-admin"
+                    ],
+                    "image": "flant/ovpn-admin:1.7.5",
+                    "labels": {
+                        "com.docker.compose.config-hash": "0b029f7cd61a87a013d267195dfa8b6209310f26a274112e136d3a13677f0c26",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "ovpn-admin",
+                        "com.docker.compose.version": "1.29.2"
+                    },
+                    "networks": {},
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "rabbitmq": {
+                "rabbitmq": {
+                    "cmd": [
+                        "rabbitmq-server"
+                    ],
+                    "image": "rabbitmq:3-management-alpine",
+                    "labels": {
+                        "com.docker.compose.config-hash": "44e75e1a2af98bd298a538fcfbc74044626a6cdfa2f132f8be3cd548d30f779e",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "rabbitmq",
+                        "com.docker.compose.version": "1.29.2"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.4",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "d8eb4f219e85",
+                                "rabbitmq"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:04"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "redis": {
+                "redis": {
+                    "cmd": [
+                        "redis-server",
+                        "--requirepass",
+                        "Fx5hOatlPU2vcWWZ8HWKNOqzNcjVhrbP"
+                    ],
+                    "image": "redis:alpine",
+                    "labels": {
+                        "com.docker.compose.config-hash": "1f29980bc9172896afffc6ec056370a60f2842e03ce25ec742e03d97bd971fe5",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "redis",
+                        "com.docker.compose.version": "1.29.2"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.6",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "redis",
+                                "34ecaf1c633b"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:06"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "runner": {
+                "runner": {
+                    "cmd": [
+                        "./runner"
+                    ],
+                    "image": "explabs/potee-runner",
+                    "labels": {
+                        "com.docker.compose.config-hash": "6ddf3a3db1b6a35dc49206488236eb789c16462268bd614bdcd5d5122852d387",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "runner",
+                        "com.docker.compose.version": "1.29.2"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.8",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "8131c185b8a2",
+                                "runner"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:08"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "scores": {
+                "scores": {
+                    "cmd": [],
+                    "image": "explabs/potee-scores",
+                    "labels": {
+                        "com.docker.compose.config-hash": "9358de9eac9910a608c3e221dbb2e2c9f6c9c56baef1d9e4b0e0ff6dac30acf4",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "scores",
+                        "com.docker.compose.version": "1.29.2",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.scores-strip.stripprefix.forceslash": "true",
+                        "traefik.http.middlewares.scores-strip.stripprefix.prefixes": "/api/v1/scores",
+                        "traefik.http.routers.scores.entrypoints": "websecure",
+                        "traefik.http.routers.scores.middlewares": "scores-strip,serviceheaders",
+                        "traefik.http.routers.scores.rule": "Host(`api.defence.potee.ru`) && PathPrefix(`/api/v1/scores`)",
+                        "traefik.http.routers.scores.tls.certresolver": "tlsresolver",
+                        "traefik.http.services.scores.loadbalancer.server.port": "8080"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.11",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "scores",
+                                "3633dd7c5ec8"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:0b"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            },
+            "traefik": {
+                "traefik": {
+                    "cmd": [
+                        "--api=true",
+                        "--api.dashboard=true",
+                        "--providers.docker=true",
+                        "--providers.docker.exposedbydefault=false",
+                        "--entrypoints.web.address=:80",
+                        "--entrypoints.web.http.redirections.entryPoint.to=websecure",
+                        "--entrypoints.web.http.redirections.entryPoint.scheme=https",
+                        "--entrypoints.web.http.redirections.entrypoint.permanent=true",
+                        "--entrypoints.websecure.address=:443",
+                        "--entrypoints.websecure.http.tls=true",
+                        "--certificatesresolvers.tlsresolver.acme.tlschallenge=true",
+                        "--certificatesresolvers.tlsresolver.acme.email=ivanhahanov13@gmail.com",
+                        "--certificatesresolvers.tlsresolver.acme.storage=acme.json"
+                    ],
+                    "image": "traefik:v2.6",
+                    "labels": {
+                        "com.docker.compose.config-hash": "ba598fa77a16754e0dd395598682bda3214d873f3089dbb214d4e4e0f4388063",
+                        "com.docker.compose.container-number": "1",
+                        "com.docker.compose.oneoff": "False",
+                        "com.docker.compose.project": "potee",
+                        "com.docker.compose.project.config_files": "/opt/potee/docker-compose.yml",
+                        "com.docker.compose.project.working_dir": "/opt/potee",
+                        "com.docker.compose.service": "traefik",
+                        "com.docker.compose.version": "1.29.2",
+                        "org.opencontainers.image.description": "A modern reverse-proxy",
+                        "org.opencontainers.image.documentation": "https://docs.traefik.io",
+                        "org.opencontainers.image.title": "Traefik",
+                        "org.opencontainers.image.url": "https://traefik.io",
+                        "org.opencontainers.image.vendor": "Traefik Labs",
+                        "org.opencontainers.image.version": "v2.6.7",
+                        "traefik.enable": "true",
+                        "traefik.http.middlewares.auth.basicauth.usersfile": "/etc/traefik/.htpasswd",
+                        "traefik.http.routers.dashboard.entrypoints": "websecure",
+                        "traefik.http.routers.dashboard.middlewares": "auth",
+                        "traefik.http.routers.dashboard.rule": "Host(`traefik.defence.potee.ru`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))",
+                        "traefik.http.routers.dashboard.service": "api@internal",
+                        "traefik.http.routers.dashboard.tls.certresolver": "tlsresolver"
+                    },
+                    "networks": {
+                        "potee_default": {
+                            "IPAddress": "172.18.0.3",
+                            "IPPrefixLen": 16,
+                            "aliases": [
+                                "traefik",
+                                "4ffa67acb3b2"
+                            ],
+                            "globalIPv6": "",
+                            "globalIPv6PrefixLen": 0,
+                            "links": null,
+                            "macAddress": "02:42:ac:12:00:03"
+                        }
+                    },
+                    "state": {
+                        "running": true,
+                        "status": "running"
+                    }
+                }
+            }
+        }
+    }
+}
+
+TASK [register_entities : include_vars] ****************************************
+ok: [51.250.4.128]
+
+TASK [register_entities : Register users] **************************************
+failed: [51.250.4.128] (item={'name': 'naliway', 'cidr': '10.0.1.0/24', 'ip': '10.0.1.10'}) => {"ansible_loop_var": "item", "changed": false, "content": "", "elapsed": 0, "item": {"cidr": "10.0.1.0/24", "ip": "10.0.1.10", "name": "naliway"}, "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1131)>", "redirected": false, "status": -1, "url": "https://api.defence.potee.ru/api/v1/admin/entities/registration"}
+failed: [51.250.4.128] (item={'name': 'nakateam', 'cidr': '10.0.2.0/24', 'ip': '10.0.2.10'}) => {"ansible_loop_var": "item", "changed": false, "content": "", "elapsed": 0, "item": {"cidr": "10.0.2.0/24", "ip": "10.0.2.10", "name": "nakateam"}, "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1131)>", "redirected": false, "status": -1, "url": "https://api.defence.potee.ru/api/v1/admin/entities/registration"}
+
+PLAY RECAP *********************************************************************
+51.250.4.128               : ok=22   changed=18   unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+

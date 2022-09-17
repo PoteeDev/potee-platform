@@ -1,9 +1,9 @@
 ---
-- hosts: all
+- hosts: vms
   become: true
   vars_files: variables.yml
   vars:
-    tasks_path: ../services/
+    tasks_path: ../../services/
     username: ubuntu
   gather_facts: no
   roles:
