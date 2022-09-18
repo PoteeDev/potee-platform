@@ -17,9 +17,5 @@ terraform $command -auto-approve -var-file config.tfvars.json
 if [ $? -eq 0 ] && [ $command == "apply" ];
 then
     ansible_path="ansible"
-
-    ansible-playbook -i $ansible_path/inventory $ansible_path/admin.yml > admin.log &
-    ansible-playbook -i $ansible_path/inventory $ansible_path/entities.yml > entities.log &
-
-    tail -f admin.log entities.log
+    ansible-playbook -i $ansible_path/inventory $ansible_path/playbook.yml
 fi

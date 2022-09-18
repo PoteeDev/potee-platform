@@ -2,6 +2,14 @@
     file: ../config.tfvars.json
     name: config
 
+- name: Check for admin services ready
+  async_status:
+    jid: "{{ admin_services.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 100
+  delay: 5
+
 - name: Register users
   uri:
     url: "{{ base_url }}/api/v1/admin/entities/registration"
@@ -16,6 +24,7 @@
       visible: true
     return_content: true
     status_code: 200
+    validate_certs: no
   loop: "{{ config.entities }}"
 
 - name: Generate vpn
@@ -25,4 +34,5 @@
     headers:
       Authorization: "Bearer {{ token }}"
     return_content: true
+    validate_certs: no
     status_code: 200

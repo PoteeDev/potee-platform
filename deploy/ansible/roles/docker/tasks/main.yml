@@ -39,7 +39,7 @@
     update_cache: yes
 
 - name: adding users to group docker
-  user:
+  ansible.builtin.user:
     name: ubuntu
     groups: docker
     append: yes
@@ -51,7 +51,6 @@
     mode: "755"
 
 - name: Install pip packages
-  tags: [deploy_tasks]
   pip:
     name:
       - docker

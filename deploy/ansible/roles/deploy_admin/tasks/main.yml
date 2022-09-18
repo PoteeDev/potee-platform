@@ -53,7 +53,6 @@
   tags: [deploy_tasks]
   community.docker.docker_compose:
     project_src: /opt/potee/
-  register: output
-
-- debug:
-    var: output
+  async: 1000
+  poll: 0
+  register: admin_services

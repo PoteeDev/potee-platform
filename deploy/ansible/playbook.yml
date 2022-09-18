@@ -1,0 +1,49 @@
+---
+# Install docker to all hosts
+- hosts: all
+  become: true
+  gather_facts: no
+  strategy: free
+  roles:
+   - docker
+
+# Setup admin VM 
+- hosts: admin
+  become: true
+  gather_facts: no
+  vars:
+    admin_path: ../../
+    email: "{{  lookup('env', 'EMAIL') }}"
+    domain: "{{ lookup('env', 'DOMAIN') }}"
+    password: "{{ lookup('password','./passwordfile chars=ascii_letters,digits length=32') }}"
+    access_secret: "{{ lookup('password','./passwordfile chars=ascii_lowercase,digits length=32') }}"
+    refresh_secret: "{{ lookup('password','./passwordfile chars=ascii_lowercase,digits length=32') }}"
+  roles:
+    - deploy_admin
+
+# Upload services to entities VMs
+- hosts: vms
+  become: true
+  strategy: free
+  vars:
+    tasks_path: ../../services/
+    username: ubuntu
+  gather_facts: no
+  roles:
+    - deploy
+
+# Register Entities 
+- hosts: admin
+  become: true
+  gather_facts: no
+  vars:
+    username: admin
+    base_url: "https://api.{{ lookup('env', 'DOMAIN') }}"
+    password: "{{ lookup('password','./passwordfile chars=ascii_letters,digits length=32') }}"
+    token: "{{ lookup('token', base_url=base_url, username=username, password=password) }}"
+  roles:
+    - register_entities
+  tasks:
+    - name: Admin Credentials
+      debug:
+        msg: "admin:{{ password }}"
