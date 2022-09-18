@@ -29,12 +29,10 @@ variable "entities" {
   type = list(object({
     name = string
     cidr = string
-    ip   = string
   }))
   default = [{
     name = "naliway"
     cidr = "10.0.1.0/24"
-    ip   = "10.0.1.10"
     services = [
       "admin",
       "dev"
