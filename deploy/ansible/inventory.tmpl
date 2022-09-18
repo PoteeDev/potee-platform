@@ -7,6 +7,6 @@ ${vm.internal_ip}
 %{ endfor ~}
 
 [vms:vars]
-ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -o StrictHostKeyChecking=no -i keys/id_rsa -q ubuntu@${admin_ip} -W %h:%p"'
+ansible_ssh_common_args='-o ControlMaster=auto -o ControlPersist=10m -o StrictHostKeyChecking=no -o ProxyCommand="ssh -o StrictHostKeyChecking=no -i keys/id_rsa -q ubuntu@${admin_ip} -W %h:%p"'
 ansible_user=ubuntu
 ansible_ssh_private_key_file="keys/id_rsa"
