@@ -9,13 +9,13 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "login",
+					"name": "Login",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"naliway\",\n    \"password\": \"PoteePassword\"\n}",
+							"raw": "{\n    \"username\": \"nakateam\",\n    \"password\": \"PoteePassword\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -36,7 +36,7 @@
 					"response": []
 				},
 				{
-					"name": "logout",
+					"name": "Logout",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -54,7 +54,7 @@
 					"response": []
 				},
 				{
-					"name": "refresh",
+					"name": "Refresh",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -85,13 +85,13 @@
 			"name": "Entities",
 			"item": [
 				{
-					"name": "register",
+					"name": "Register",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"nakateam\",\n    \"password\": \"explabsexplabsexplabs\",\n    \"ssh_pub_key\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD031UdpvqUS/LzznU8JBYqnKY023HT3bhpw9hvWv2FcsmFMa0oZJstc/AJRvt45BYOSMEoITiaZ5pSdKoJ1InSv2KEWOf2MF76Ui1lmvmneIXu7Dj7OJkyGlk5SQ1WG9Wc/98qmg0RUKpO/Dw6GpD4hEYBsU/yXmNOXKCNTTmK7gfka06R0YGGatPilKhsfjKy8sUMuUPeeiX6GqB8wwz51AUCV+cabmgFXzgcTEI8D/2taplgiBqnfInY7dKEAzl2a1zuxR1zo45UFPPw37bd+qkOlkAECJ9hKTdsvDNphWDcu77+ovARP1mG+fx5Vr8SM3GaUHs+SQhH7BUTeAXlQsZ55yP4WnIZ5DpPOxsYO8RAs3NScR6fj+TUe2wHuxCATPeI3XBKQcA377uWGTFTfXe9TQDy4L2QA/jtFXbs5UdnR8P00ijXcQahdBd8UhYSgNQcJZZgNdiohQb1pj3Hn9dG1La9JOLdzl71VjxtiGq8fGI0urlLQGUC6qzg5FM= ivanh@ivanh\"\n}",
+							"raw": "{\n    \"name\":\"naliway\",\n    \"password\": \"1\",\n    \"ssh_pub_key\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD031UdpvqUS/LzznU8JBYqnKY023HT3bhpw9hvWv2FcsmFMa0oZJstc/AJRvt45BYOSMEoITiaZ5pSdKoJ1InSv2KEWOf2MF76Ui1lmvmneIXu7Dj7OJkyGlk5SQ1WG9Wc/98qmg0RUKpO/Dw6GpD4hEYBsU/yXmNOXKCNTTmK7gfka06R0YGGatPilKhsfjKy8sUMuUPeeiX6GqB8wwz51AUCV+cabmgFXzgcTEI8D/2taplgiBqnfInY7dKEAzl2a1zuxR1zo45UFPPw37bd+qkOlkAECJ9hKTdsvDNphWDcu77+ovARP1mG+fx5Vr8SM3GaUHs+SQhH7BUTeAXlQsZ55yP4WnIZ5DpPOxsYO8RAs3NScR6fj+TUe2wHuxCATPeI3XBKQcA377uWGTFTfXe9TQDy4L2QA/jtFXbs5UdnR8P00ijXcQahdBd8UhYSgNQcJZZgNdiohQb1pj3Hn9dG1La9JOLdzl71VjxtiGq8fGI0urlLQGUC6qzg5FM= ivanh@ivanh\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,12 +99,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/team/registration",
+							"raw": "{{baseUrl}}/entities/registration",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"team",
+								"entities",
 								"registration"
 							]
 						}
@@ -112,7 +112,7 @@
 					"response": []
 				},
 				{
-					"name": "info",
+					"name": "Info",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -125,26 +125,22 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImQ1MmE5N2I5LTkzZjAtNDdkYy1iODZlLWFhNjU1YmIyZWVkMCIsImV4cCI6MTY1OTg4MTM3MCwidXNlcl9pZCI6Im5hbGl3YXkifQ.RGkWkST8BPAI_56x_zDkLX7dPU0GzymBbZbzoa39E78",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/entities/info",
+							"raw": "{{baseUrl}}/entities/info?name=naliway",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"entities",
 								"info"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "naliway"
+								}
 							]
 						}
 					},
@@ -167,6 +163,22 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Generate Vpn Conf",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vpn Config",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -174,7 +186,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImVmNDYyOTYyLTQ3MDMtNDAxYy04MjA5LTVkNWE0YjAxMDk0OSIsImV4cCI6MTY1OTg4NzI4MiwidXNlcl9pZCI6Im5hbGl3YXkifQ.Quj9BSV1ylNmiwPjcv4kPNq8Gp-9WvtE7le5px6Yy38",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjkwNWEyMjk0LWU5MTQtNDEyYS05OGMxLWRjMTMyYWUwMWQ0MyIsImV4cCI6MTY2Njk3NTc0MCwidXNlcl9pZCI6Im5ha2F0ZWFtIn0.km2ha8h9w3XoOzguoiEIE34zQsoAoRzhDlR_9uiakVA",
 						"type": "string"
 					}
 				]
@@ -321,16 +333,6 @@
 						{
 							"name": "Show",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjkwY2U2YTMwLTAzYWQtNDA4Zi1iMWVlLWE2MTM5MzMwNzQyNSIsImV4cCI6MTY1ODU4MjgyNiwidXNlcl9pZCI6ImFkbWluIn0.SV6l4E5dZcYFoA-mUPGkfK8kFbFK4l65TpgQYaw1_pI",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -445,6 +447,42 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"password\": \"PoteePassword\",\n    \"subnet\": \"10.0.1.0/24\",\n    \"ip\": \"10.0.1.10\",\n    \"visible\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/admin/entities/registration",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"entities",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate VPN",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -452,7 +490,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjUyYTVjNGE4LWE5YjMtNGNhNS04MmUzLTAzOWIwMWZhNDU0YyIsImV4cCI6MTY1OTg4MjM5MywidXNlcl9pZCI6ImFkbWluIn0.oIDYJhWmhzMehFNhlUebT137Y3qLyMdj9s8t4ftjS-4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImI5NGExYWExLTc4YjctNGQ3My1iOGM4LTRjYzQ5MmE2MjMyNyIsImV4cCI6MTY2Njk3NjI4NSwidXNlcl9pZCI6ImFkbWluIn0.FE10ZfZYquImtLN338Rdu-Uzdz_O0Z2Gggs6F4eYchM",
 						"type": "string"
 					}
 				]
@@ -489,7 +527,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImVmNDYyOTYyLTQ3MDMtNDAxYy04MjA5LTVkNWE0YjAxMDk0OSIsImV4cCI6MTY1OTg4NzI4MiwidXNlcl9pZCI6Im5hbGl3YXkifQ.Quj9BSV1ylNmiwPjcv4kPNq8Gp-9WvtE7le5px6Yy38",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImYzYmRhNTI0LWVkM2YtNDlkMi04ZmNhLTlkMGFmMjVkMmYxNyIsImV4cCI6MTY2MjU3Nzc2NCwidXNlcl9pZCI6ImFkbWluIn0.f3Hovt3C00jQU4SwjTHraA9COk19Rb7jwBKlRwr9Bpo",
 									"type": "string"
 								}
 							]
@@ -508,6 +546,30 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "UsersScore",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/scores/user?name=naliway",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"scores",
+								"user"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "naliway"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -515,7 +577,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImNjOGZkMmIyLTRiOGUtNGMyZi1hYzJjLTkwNmRjMTZlMDM4NCIsImV4cCI6MTY1ODk5ODg0MywidXNlcl9pZCI6Im5hbGl3YXkifQ.Zq1f1GhSwFMIh4VH1GSJIIcq7DEBDgvOBpVjrqODWvs",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjZiZTM4YjVjLTA2N2QtNGYxMy04N2FhLTMwNmI0MTI2OWQyZCIsImV4cCI6MTY2Njg4Njg4MSwidXNlcl9pZCI6Im5ha2F0ZWFtIn0.kD31G_1oV_oizO-qKCys56zzeM59MI6KwgmkkCk0xIs",
 						"type": "string"
 					}
 				]
