@@ -23,6 +23,10 @@ variable "subnet_name" {
   type = string
 }
 
+variable "password" {
+  type = string
+}
+
 variable "ip_address" {
   type = string
   default = "10.0.1.10"

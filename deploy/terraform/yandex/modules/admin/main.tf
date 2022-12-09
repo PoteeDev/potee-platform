@@ -39,11 +39,11 @@ resource "yandex_vpc_subnet" "admin-subnet" {
   v4_cidr_blocks = var.cidr_blocks
 }
 
-resource "yandex_dns_recordset" "rs" {
-  for_each = toset(var.domains)
-  zone_id = var.dns_public_zone_id
-  name    = "${each.value}.${var.public_domain}."
-  type    = "A"
-  ttl     = 200
-  data    = [yandex_compute_instance.vm.network_interface.0.nat_ip_address]
-}
+# resource "yandex_dns_recordset" "rs" {
+#   for_each = toset(var.domains)
+#   zone_id = var.dns_public_zone_id
+#   name    = "${each.value}.${var.public_domain}."
+#   type    = "A"
+#   ttl     = 200
+#   data    = [yandex_compute_instance.vm.network_interface.0.nat_ip_address]
+# }

@@ -18,6 +18,7 @@ resource "yandex_compute_instance" "vm" {
   boot_disk {
     initialize_params {
       image_id = "fd8ju9iqf6g5bcq77jns"
+      size = 10
     }
   }
 
@@ -28,7 +29,9 @@ resource "yandex_compute_instance" "vm" {
   }
 
   metadata = {
-    ssh-keys = "${var.username}:${file(var.ssh_key)}"
+    user-data = templatefile("${path.module}/cloud-config.yml", {
+      ssh_key = file(var.ssh_key)
+    })
   }
 }
 

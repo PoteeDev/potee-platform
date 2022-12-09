@@ -18,14 +18,14 @@ resource "yandex_dns_zone" "potee" {
   private_networks = [yandex_vpc_network.network.id]
 }
 
-resource "yandex_dns_zone" "public_potee" {
-  name        = "potee-public-zone"
-  description = "desc"
+# resource "yandex_dns_zone" "public_potee" {
+#   name        = "potee-public-zone"
+#   description = "desc"
 
-  zone             = "${var.public_domain}."
-  public           = true
-  private_networks = [yandex_vpc_network.network.id]
-}
+#   zone             = "${var.public_domain}."
+#   public           = true
+#   private_networks = [yandex_vpc_network.network.id]
+# }
 
 resource "yandex_compute_instance" "nat" {
   name = "nat"

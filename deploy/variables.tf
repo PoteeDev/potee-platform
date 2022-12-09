@@ -18,7 +18,12 @@ variable "admin_subnet" {
 
 variable "public_domain" {
   type    = string
-  default = "defence.potee.ru"
+  default = "potee.ru"
+}
+
+variable "cloudflare_api_token" {
+  type        = string
+  description = "cloudflare api token"
 }
 
 variable "services" {
@@ -29,13 +34,6 @@ variable "entities" {
   type = list(object({
     name = string
     cidr = string
+    password = string
   }))
-  default = [{
-    name = "naliway"
-    cidr = "10.0.1.0/24"
-    services = [
-      "admin",
-      "dev"
-    ]
-  }]
 }

@@ -2,9 +2,9 @@ variable "network_id" {
   type = string
 }
 
-variable "dns_public_zone_id" {
-  type = string
-}
+# variable "dns_public_zone_id" {
+#   type = string
+# }
 
 variable "ssh_key" {
   type    = string
