@@ -36,6 +36,20 @@ services:
       - "traefik.http.middlewares.auth.basicauth.usersfile=/etc/traefik/.htpasswd"
       - "traefik.http.routers.dashboard.middlewares=auth"
       
+  web:
+    image: explabs/potee-web
+    container_name: web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`${DOMAIN}`)"
+      #- "traefik.http.routers.web.rule=HostRegexp(`{DOMAIN:.+}`)"
+      - "traefik.http.routers.web.priority=1"
+      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.routers.web.middlewares=serviceheaders"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   auth:
     image: explabs/potee-auth
@@ -43,12 +57,12 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/auth`)"
+      - "traefik.http.routers.auth.rule=Host(`${DOMAIN}`) && PathPrefix(`/api/v1/auth`)"
       - "traefik.http.routers.auth.entrypoints=web"
       - "traefik.http.middlewares.auth-strip.stripprefix.prefixes=/api/v1/auth"
       - "traefik.http.middlewares.auth-strip.stripprefix.forceslash=true"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
-      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type"
+      - "traefik.http.middlewares.serviceheaders.headers.accessControlallowheaders=Content-Type,Authorization"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolalloworiginlist=*" 
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE"
       - "traefik.http.middlewares.serviceheaders.headers.accesscontrolmaxage=100"
@@ -64,7 +78,7 @@ services:
     environment: *default-environment
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.entities.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/entities`)"
+      - "traefik.http.routers.entities.rule=Host(`${DOMAIN}`) && PathPrefix(`/api/v1/entities`)"
       - "traefik.http.routers.entities.entrypoints=web"
       - "traefik.http.middlewares.entities-strip.stripprefix.prefixes=/api/v1/entities"
       - "traefik.http.middlewares.entities-strip.stripprefix.forceslash=true"
@@ -83,7 +97,7 @@ services:
       - ACCESS_SECRET=$ACCESS_SECRET
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.scores.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/scores`)"
+      - "traefik.http.routers.scores.rule=Host(`${DOMAIN}`) && PathPrefix(`/api/v1/scores`)"
       - "traefik.http.routers.scores.entrypoints=web"
       - "traefik.http.middlewares.scores-strip.stripprefix.prefixes=/api/v1/scores"
       - "traefik.http.middlewares.scores-strip.stripprefix.forceslash=true"
@@ -108,7 +122,7 @@ services:
       - MINIO_SECRET_KEY=$MINIO_PASS
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.admin.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/admin`)"
+      - "traefik.http.routers.admin.rule=Host(`${DOMAIN}`) && PathPrefix(`/api/v1/admin`)"
       - "traefik.http.routers.admin.entrypoints=web"
       - "traefik.http.middlewares.admin-strip.stripprefix.prefixes=/api/v1/admin"
       - "traefik.http.middlewares.admin-strip.stripprefix.forceslash=true"
@@ -139,7 +153,7 @@ services:
       - PYTHONUNBUFFERED=1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.manager.rule=Host(`api.${DOMAIN}`) && PathPrefix(`/api/v1/scenario`)"
+      - "traefik.http.routers.manager.rule=Host(`${DOMAIN}`) && PathPrefix(`/api/v1/scenario`)"
       - "traefik.http.routers.manager.entrypoints=web"
       - "traefik.http.middlewares.manager-strip.stripprefix.prefixes=/api/v1/scenario"
       - "traefik.http.middlewares.manager-strip.stripprefix.forceslash=true"
@@ -165,6 +179,18 @@ services:
     volumes:
       - ./requirements.txt:/usr/app/requirements.txt
     scale: 3
+  sender:
+    image: explabs/potee-sender
+    command: amqp
+    environment:
+      - PROVIDER=telegram
+      - BOT_TOKEN=$BOT_TOKEN
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=services
+      - RABBITMQ_PASS=$RABBITMQ_PASS
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
