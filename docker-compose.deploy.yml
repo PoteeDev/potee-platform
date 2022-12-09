@@ -6,11 +6,14 @@ services:
     image: explabs/potee-deploy
     command: apply
     environment:
-      EMAIL: ivanhahanov13@gmail.com
       DOMAIN: defence.potee.ru
-      YC_TOKEN: <Yandex OAuth Token>
+      # EMAIL: xxx
+      # CF_API_TOKEN: xxx
+      # YC_TOKEN: <Yandex OAuth Token>
       # YC_CLOUD_ID: xxx
       # YC_FOLDER_ID: xxx
+      # BOT_TOKEN: xxx
+      
     volumes:
       - ./:/platform/
 
