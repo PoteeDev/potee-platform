@@ -1,0 +1,23 @@
+---
+- include_vars:
+    file: ../config.tfvars.json
+    name: config
+
+- name: Change password
+  ansible.builtin.user:
+    name: "{{ username }}"
+    state: present
+    #password: PoteePassword
+    password: "{{ hostvars[inventory_hostname].password | password_hash('sha512') }}"
+
+- name: Configure sshd
+  lineinfile:
+    path: "{{ssh_config}}"
+    regex: "^(#)?{{item.key}}"
+    line: "{{item.key}} {{item.value}}"
+    state: present
+  loop:
+    - { key: "PermitRootLogin", value: "no" }
+    - { key: "PasswordAuthentication", value: "yes" } 
+  notify:
+    - restart sshd

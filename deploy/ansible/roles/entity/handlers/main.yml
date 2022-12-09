@@ -1,0 +1,7 @@
+---
+- name: restart sshd
+  service:
+    daemon_reload: yes
+    name: sshd
+    enabled: yes
+    state: restarted

@@ -3,7 +3,7 @@ ${admin_ip} ansible_user=ubuntu ansible_ssh_private_key_file="keys/id_rsa"
 
 [vms]
 %{ for index, vm in entities ~}
-${vm.internal_ip}
+${vm.internal_ip} password=${vm.password}
 %{ endfor ~}
 
 [vms:vars]

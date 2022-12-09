@@ -19,8 +19,9 @@
     body_format: json
     body:
       name: "{{ item.name }}"
-      password: "PoteePassword"
+      password: "{{ item.password }}"
       subnet: "{{ item.cidr | ipaddr('network') }}"
+      ip: "{{ item.cidr | ipaddr('10') | ipaddr('address') }}"
       visible: true
     return_content: true
     status_code: 200

@@ -49,6 +49,38 @@
     src: openvpn.conf
     dest: /opt/potee/openvpn/setup/openvpn.conf
 
+- name: Pull an image
+  community.docker.docker_image:
+    name: "{{ item }}"
+    source: pull
+  with_items:
+    - traefik:v2.6
+    - explabs/potee-auth
+    - explabs/potee-entities
+    - explabs/potee-scores
+    - explabs/potee-admin
+    - explabs/potee-manager
+    - explabs/potee-runner
+    - explabs/potee-sender
+    - rabbitmq:3-management-alpine
+    - quay.io/minio/minio
+    - redis:alpine
+    - mongo:5.0
+    - flant/ovpn-admin:openvpn-1.7.5
+    - flant/ovpn-admin:1.7.5
+  async: 100
+  poll: 0
+  register: _pull_images
+
+- name: Check for images pulled
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: _jobs
+  until: _jobs.finished
+  retries: 100
+  delay: 5
+  with_items: "{{ _pull_images.results }}"
+
 - name: Create and start services
   tags: [deploy_tasks]
   community.docker.docker_compose:
