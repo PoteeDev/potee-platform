@@ -1,0 +1,35 @@
+auth:
+  rootPassword: "{{ .Release.Store.mongo.rootPassword }}"
+  usernames:
+    - "{{ .Release.Store.mongo.username }}"
+  passwords:
+    - "{{ .Release.Store.mongo.password }}"
+  databases:
+    - "{{ .Release.Store.mongo.database }}"
+
+initdbScripts:
+  init-db.js: |-
+    db = new Mongo().getDB("ad");
+    db.auth("admin", "secretpassword")
+    db.entities.insertMany([{
+      created_at: ISODate("2022-08-02T13:31:08.047Z"),
+      updated_at: ISODate("2022-08-02T13:31:08.047Z"),
+      name: "naliway",
+      login: "naliway",
+      subnet: "10.0.1.0/24",
+      ip: "localhost",
+      hash: "$2a$10$kwBXqn0kau4HRn2SO6ufr.PL.5u3RsENjCnmzySn2A8mxeOFpo9Km",
+      visible: true,
+      blocked: false
+    },
+    {
+      created_at: ISODate("2022-08-02T13:31:08.047Z"),
+      updated_at: ISODate("2022-08-02T13:31:08.047Z"),
+      name: "nakateam",
+      login: "nakateam",
+      subnet: "10.0.2.0/24",
+      ip: "localhost",
+      hash: "$2a$10$kwBXqn0kau4HRn2SO6ufr.PL.5u3RsENjCnmzySn2A8mxeOFpo9Km",
+      visible: true,
+      blocked: false
+    }])

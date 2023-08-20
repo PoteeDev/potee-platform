@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}-admin
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.admin.autoscaling.enabled }}
+  replicas: {{ .Values.admin.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.admin.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.admin.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.admin.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-admin
+          securityContext:
+            {{- toYaml .Values.admin.securityContext | nindent 12 }}
+          image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.admin.service.port }}
+              protocol: TCP
+          env:
+          - name: ADMIN_PASS
+            value: admin
+          envFrom:
+          - configMapRef:
+              name: {{ include "chart.fullname" . }}-config
+          - configMapRef:
+              name: {{ include "chart.fullname" . }}-minio
+          - secretRef:
+              name: {{ include "chart.fullname" . }}-access
+          - secretRef:
+              name: {{ include "chart.fullname" . }}-minio
+          # livenessProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: http
+          resources:
+            {{- toYaml .Values.admin.resources | nindent 12 }}
+      {{- with .Values.admin.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.admin.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.admin.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

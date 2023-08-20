@@ -1,0 +1,3 @@
+auth:
+  rootUser: "{{ .Release.Store.minio.username }}"
+  rootPassword: "{{ .Release.Store.minio.password }}"

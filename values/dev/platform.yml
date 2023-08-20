@@ -1,0 +1,34 @@
+redis:
+  password: "{{ .Release.Store.redis.password }}"
+
+mongo:
+  username: "{{ .Release.Store.mongo.username }}"
+  password: "{{ .Release.Store.mongo.password }}"
+  database: "{{ .Release.Store.mongo.database }}"
+
+minio:
+  username: "{{ .Release.Store.minio.username }}"
+  password: "{{ .Release.Store.minio.password }}"
+
+manager:
+  scenario: |
+    time: 1h
+    period: 15s
+    services:
+      test: # service with name "test"
+        name: Test
+        description: Test service used for validate scenario and runners
+        reputation: 1000 # service health points
+        domain: test # subdomain name for service
+        script: test.py # name of script with all actions for service
+        checkers:
+          - example
+        exploits: 
+          sql: # name for exploits
+            startAt: 15m # round for sql exploit run
+            period: 10m
+            cost: 5 # cost of exploit
+          rce:
+            startAt: 30m
+            period: 10m
+            cost: 5

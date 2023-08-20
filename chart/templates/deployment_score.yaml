@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}-score
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.score.autoscaling.enabled }}
+  replicas: {{ .Values.score.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.score.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.score.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.score.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-score
+          securityContext:
+            {{- toYaml .Values.score.securityContext | nindent 12 }}
+          image: "{{ .Values.score.image.repository }}:{{ .Values.score.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.score.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.score.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "chart.fullname" . }}-config
+            - secretRef:
+                name: {{ include "chart.fullname" . }}-access
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          resources:
+            {{- toYaml .Values.score.resources | nindent 12 }}
+      {{- with .Values.score.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.score.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.score.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

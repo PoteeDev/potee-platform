@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "chart.fullname" . }}-scenario
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+data:
+  scenario.yml: |
+{{- .Values.manager.scenario | nindent 4 }}

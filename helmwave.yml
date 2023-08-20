@@ -1,0 +1,77 @@
+project: "PoteePlatform"
+version: "0.30.1"
+
+registries:
+  - name: registry
+    host: registry-1.docker.io
+
+.options: &options
+  namespace: dev
+  create_namespace: true
+  wait: true
+  timeout: "3m"
+  max_history: 3 # best practice
+
+releases:
+  - name: mongodb
+    <<: *options
+    chart:
+      # For example, we will use bitnami/nats chart, because it's small and fast
+      name: oci://registry-1.docker.io/bitnamicharts/mongodb
+      version: 13.16.4 # best practice
+    store:
+      mongo:
+        rootPassword: secretpassword
+        password: secretpassword
+        username: admin
+        database: ad
+    values:
+      - src: values/dev/mongo.yml
+
+  - name: redis
+    <<: *options
+    chart:
+      # For example, we will use bitnami/nats chart, because it's small and fast
+      name: oci://registry-1.docker.io/bitnamicharts/redis
+      version: 17.15.5 # best practice
+    store:
+      redis:
+        password: secretpassword
+    values:
+      - src: values/dev/redis.yml
+  - name: minio
+    <<: *options
+    chart:
+      # For example, we will use bitnami/nats chart, because it's small and fast
+      name: oci://registry-1.docker.io/bitnamicharts/minio
+      version: 12.7.0 # best practice
+    store:
+      minio:
+        username: admin
+        password: secretpassword
+    values:
+      - src: values/dev/minio.yml
+
+  - name: platform
+    <<: *options
+    chart:
+      # For example, we will use bitnami/nats chart, because it's small and fast
+      name: ./chart
+    store:
+      mongo:
+        password: secretpassword
+        username: admin
+        database: ad
+      redis:
+        password: secretpassword
+      minio:
+        username: admin
+        password: secretpassword
+    values:
+      - src: values/dev/platform.yml
+
+    depends_on:
+      - mongodb
+      - redis
+      - minio
+      # version: 17.15.5 # best practice
