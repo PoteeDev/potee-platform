@@ -37,6 +37,11 @@ spec:
             - name: http
               containerPort: {{ .Values.checkers.service.port }}
               protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ include "chart.fullname" . }}-minio
+          - secretRef:
+              name: {{ include "chart.fullname" . }}-minio
           # livenessProbe:
           #   httpGet:
           #     path: /

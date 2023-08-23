@@ -39,6 +39,7 @@ releases:
         password: secretpassword
     values:
       - src: values/dev/redis.yml
+
   - name: minio
     <<: *options
     chart:
@@ -74,4 +75,3 @@ releases:
       - mongodb
       - redis
       - minio
-      # version: 17.15.5 # best practice

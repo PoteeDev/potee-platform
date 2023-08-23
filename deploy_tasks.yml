@@ -1,0 +1,27 @@
+# ansible-galaxy collection install amazon.aws
+# pip3 install boto3
+
+- name: Minio
+  hosts: localhost
+  connection: local
+  vars:
+    dir: scripts
+  tasks:
+    - find:
+        paths: "{{ dir }}"
+        file_type: file
+        get_checksum: false
+      register: scripts
+
+    - name: PUT operation from a rendered template
+      amazon.aws.s3_object:
+        endpoint_url: http://localhost:9000
+        access_key: admin
+        secret_key: secretpassword
+        encrypt: false
+        bucket: "{{ dir }}"
+        object: "{{ item.path | basename }}"
+        src: "{{ item.path }}"
+        #content: "{{ lookup('template', 'templates/object.yaml.j2') }}"
+        mode: put
+      loop: "{{ scripts.files }}"
