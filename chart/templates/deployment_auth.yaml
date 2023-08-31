@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}-auth
+  name: {{ include "potee.auth.fullname" . }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    {{- include "potee.auth.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.auth.autoscaling.enabled }}
   replicas: {{ .Values.auth.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "chart.selectorLabels" . | nindent 6 }}
+      {{- include "potee.auth.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.auth.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "chart.selectorLabels" . | nindent 8 }}
+        {{- include "potee.auth.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.auth.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "potee.serviceAccountName.auth" . }}
       securityContext:
         {{- toYaml .Values.auth.podSecurityContext | nindent 8 }}
       containers:
@@ -35,9 +35,9 @@ spec:
           imagePullPolicy: {{ .Values.auth.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ include "chart.fullname" . }}-config
+                name: {{ include "potee.name" . }}-config
             - secretRef:
-                name: {{ include "chart.fullname" . }}-access
+                name: {{ include "potee.name" . }}-access
           ports:
             - name: http
               containerPort: {{ .Values.auth.service.port }}

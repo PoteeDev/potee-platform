@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}-admin
+  name: {{ include "potee.admin.fullname" . }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    {{- include "potee.admin.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.admin.autoscaling.enabled }}
   replicas: {{ .Values.admin.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "chart.selectorLabels" . | nindent 6 }}
+      {{- include "potee.admin.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.admin.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "chart.selectorLabels" . | nindent 8 }}
+        {{- include "potee.admin.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.admin.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "potee.serviceAccountName.admin" . }}
       securityContext:
         {{- toYaml .Values.admin.podSecurityContext | nindent 8 }}
       containers:
@@ -42,13 +42,13 @@ spec:
             value: admin
           envFrom:
           - configMapRef:
-              name: {{ include "chart.fullname" . }}-config
+              name: {{ include "potee.name" . }}-config
           - configMapRef:
-              name: {{ include "chart.fullname" . }}-minio
+              name: {{ include "potee.name" . }}-minio
           - secretRef:
-              name: {{ include "chart.fullname" . }}-access
+              name: {{ include "potee.name" . }}-access
           - secretRef:
-              name: {{ include "chart.fullname" . }}-minio
+              name: {{ include "potee.name" . }}-minio
           # livenessProbe:
           #   httpGet:
           #     path: /ping

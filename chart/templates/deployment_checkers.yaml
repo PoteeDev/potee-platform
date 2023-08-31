@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}-checkers
+  name: {{ include "potee.checkers.fullname" . }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    {{- include "potee.checkers.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.checkers.autoscaling.enabled }}
   replicas: {{ .Values.checkers.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "chart.selectorLabels" . | nindent 6 }}
+      {{- include "potee.checkers.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.checkers.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "chart.selectorLabels" . | nindent 8 }}
+        {{- include "potee.checkers.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.checkers.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "potee.serviceAccountName.checkers" . }}
       securityContext:
         {{- toYaml .Values.checkers.podSecurityContext | nindent 8 }}
       containers:
@@ -39,9 +39,9 @@ spec:
               protocol: TCP
           envFrom:
           - configMapRef:
-              name: {{ include "chart.fullname" . }}-minio
+              name: {{ include "potee.name" . }}-minio
           - secretRef:
-              name: {{ include "chart.fullname" . }}-minio
+              name: {{ include "potee.name" . }}-minio
           # livenessProbe:
           #   httpGet:
           #     path: /

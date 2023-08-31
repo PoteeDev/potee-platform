@@ -13,7 +13,7 @@
   gather_facts: no
   vars:
     admin_path: ../../
-    email: "{{  lookup('env', 'EMAIL') }}"
+    email: "{{ lookup('env', 'EMAIL') }}"
     domain: "{{ lookup('env', 'DOMAIN') }}"
     tg_bot_token: "{{ lookup('env', 'BOT_TOKEN') }}"
     cf_dns_api_token: "{{ lookup('env', 'CF_API_TOKEN') }}"

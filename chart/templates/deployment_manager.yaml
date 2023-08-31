@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}-manager
+  name: {{ include "potee.manager.fullname" . }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    {{- include "potee.manager.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.manager.replicaCount }}
   selector:
     matchLabels:
-      {{- include "chart.selectorLabels" . | nindent 6 }}
+      {{- include "potee.manager.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.manager.podAnnotations }}
@@ -16,13 +16,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "chart.selectorLabels" . | nindent 8 }}
+        {{- include "potee.manager.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.manager.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "potee.serviceAccountName.manager" . }}
       securityContext:
         {{- toYaml .Values.manager.podSecurityContext | nindent 8 }}
       containers:
@@ -37,14 +37,14 @@ spec:
             protocol: TCP
         env:
           - name: CHECKER_HOST
-            value: "{{ include "chart.fullname" . }}-checkers"
+            value: "{{ include "potee.checkers.fullname" . }}"
           - name: CHECKER_PORT
             value: "50001"
         envFrom:
           - configMapRef:
-              name: {{ include "chart.fullname" . }}-config
+              name: {{ include "potee.name" . }}-config
           - secretRef:
-              name: {{ include "chart.fullname" . }}-access
+              name: {{ include "potee.name" . }}-access
         livenessProbe:
           httpGet:
             path: /ping
@@ -62,7 +62,7 @@ spec:
       volumes:
       - name: scenario
         configMap:
-          name: {{ include "chart.fullname" . }}-scenario
+          name: {{ include "potee.name" . }}-scenario
       {{- with .Values.manager.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
