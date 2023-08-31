@@ -1,0 +1,10 @@
+apiVersion: k3d.io/v1alpha4 # this will change in the future as we make everything more stable
+kind: Simple # internally, we also have a Cluster config, which is not yet available externally
+metadata:
+  name: potee-cluster
+options:
+  k3s: # options passed on to K3s itself
+    extraArgs: # additional arguments passed to the `k3s server|agent` command; same as `--k3s-arg`
+      - arg: "--disable=traefik"
+        nodeFilters:
+          - server:*

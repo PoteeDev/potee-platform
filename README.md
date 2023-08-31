@@ -42,3 +42,23 @@ docker-compose pull
 docker-compose up -d
 ```
 
+## Deploy for Kubernetes
+
+### Dev Mode
+#### Deploy k3s cluster
+For local deployment you can use [k3d](https://k3d.io/v5.6.0/)
+```
+k3d cluster create -c k3d-config.yml
+```
+
+After the cluster is deployed, you need to install the nginx ingress controller
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/cloud/deploy.yaml
+```
+
+#### Deploy Potee Platform
+To deploy helm charts of the platform and its dependencies, you can take [helmwave](https://docs.helmwave.app/0.31.x/)
+```
+helmwave up --build
+```
+
