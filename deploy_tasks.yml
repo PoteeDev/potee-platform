@@ -6,6 +6,9 @@
   connection: local
   vars:
     dir: scripts
+    endpoint_url: http://api.minio.potee.local
+    access_key: admin
+    secret_key: secretpassword
   tasks:
     - find:
         paths: "{{ dir }}"
@@ -13,11 +16,20 @@
         get_checksum: false
       register: scripts
 
-    - name: PUT operation from a rendered template
+    - name: Create bucket for scripts
+      amazon.aws.s3_bucket:
+        endpoint_url: "{{ endpoint_url }}"
+        name: "{{ dir }}"
+        access_key: "{{ access_key }}"
+        secret_key: "{{ secret_key }}"
+        encryption: "none"
+        state: present
+
+    - name: put checkers scripts
       amazon.aws.s3_object:
-        endpoint_url: http://localhost:9000
-        access_key: admin
-        secret_key: secretpassword
+        endpoint_url: "{{ endpoint_url }}"
+        access_key: "{{ access_key }}"
+        secret_key: "{{ secret_key }}"
         encrypt: false
         bucket: "{{ dir }}"
         object: "{{ item.path | basename }}"
