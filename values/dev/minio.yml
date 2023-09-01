@@ -1,3 +1,14 @@
 auth:
   rootUser: "{{ .Release.Store.minio.username }}"
   rootPassword: "{{ .Release.Store.minio.password }}"
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hostname: minio.potee.local
+
+apiIngress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hostname: api.minio.potee.local
