@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.checkers.image.repository }}:{{ .Values.checkers.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.checkers.image.pullPolicy }}
           ports:
-            - name: http
+            - name: grpc
               containerPort: {{ .Values.checkers.service.port }}
               protocol: TCP
           envFrom:

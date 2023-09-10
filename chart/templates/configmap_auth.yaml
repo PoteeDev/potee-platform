@@ -8,7 +8,7 @@ data:
   PORT: "80"
   REDIS_HOST: "redis-master"
   REDIS_PORT: "6379"
-  MONGO_HOST: "mongodb"
+  MONGO_HOST: "mongodb-headless"
   MONGO_USER: {{ .Values.mongo.username }}
   MONGO_DB: {{ .Values.mongo.database }}
 

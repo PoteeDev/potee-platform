@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.checkers.service.type }}
   ports:
     - port: {{ .Values.checkers.service.port }}
-      targetPort: http
+      targetPort: grpc
       protocol: TCP
-      name: http
+      name: grpc
   selector:
     {{- include "potee.checkers.selectorLabels" . | nindent 4 }}

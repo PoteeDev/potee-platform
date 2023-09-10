@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "potee.events.fullname" . }}
+  labels:
+    {{- include "potee.events.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.events.autoscaling.enabled }}
+  replicas: {{ .Values.events.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "potee.events.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.events.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "potee.events.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.events.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "potee.serviceAccountName.events" . }}
+      securityContext:
+        {{- toYaml .Values.events.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-events
+          securityContext:
+            {{- toYaml .Values.events.securityContext | nindent 12 }}
+          image: "{{ .Values.events.image.repository }}:{{ .Values.events.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.events.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.events.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "potee.name" . }}-config
+            - secretRef:
+                name: {{ include "potee.name" . }}-access
+          # livenessProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /ping
+          #     port: http
+          resources:
+            {{- toYaml .Values.events.resources | nindent 12 }}
+      {{- with .Values.events.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.events.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.events.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

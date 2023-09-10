@@ -39,7 +39,7 @@ spec:
           - name: CHECKER_HOST
             value: "{{ include "potee.checkers.fullname" . }}"
           - name: CHECKER_PORT
-            value: "50001"
+            value: "50051"
         envFrom:
           - configMapRef:
               name: {{ include "potee.name" . }}-config

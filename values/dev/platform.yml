@@ -10,10 +10,19 @@ minio:
   username: "{{ .Release.Store.minio.username }}"
   password: "{{ .Release.Store.minio.password }}"
 
+checkers:
+  replicaCount: 1
+
 manager:
   scenario: |
     time: 1h
     period: 15s
+    actions: 
+      - ping
+      - get
+      - put
+      - exploit
+
     services:
       test: # service with name "test"
         name: Test

@@ -9,8 +9,20 @@ registries:
   namespace: dev
   create_namespace: true
   wait: true
-  timeout: "3m"
+  timeout: "4m"
   max_history: 3 # best practice
+
+.creds: &creds
+  mongo:
+    rootPassword: secretpassword
+    password: secretpassword
+    username: admin
+    database: ad
+  redis:
+    password: secretpassword
+  minio:
+    username: admin
+    password: secretpassword
 
 releases:
   - name: mongodb
@@ -20,11 +32,7 @@ releases:
       name: oci://registry-1.docker.io/bitnamicharts/mongodb
       version: 13.16.4 # best practice
     store:
-      mongo:
-        rootPassword: secretpassword
-        password: secretpassword
-        username: admin
-        database: ad
+      <<: *creds
     values:
       - src: values/dev/mongo.yml
 
@@ -35,8 +43,7 @@ releases:
       name: oci://registry-1.docker.io/bitnamicharts/redis
       version: 17.15.5 # best practice
     store:
-      redis:
-        password: secretpassword
+      <<: *creds
     values:
       - src: values/dev/redis.yml
 
@@ -47,9 +54,7 @@ releases:
       name: oci://registry-1.docker.io/bitnamicharts/minio
       version: 12.7.0 # best practice
     store:
-      minio:
-        username: admin
-        password: secretpassword
+      <<: *creds
     values:
       - src: values/dev/minio.yml
 
@@ -59,15 +64,7 @@ releases:
       # For example, we will use bitnami/nats chart, because it's small and fast
       name: ./chart
     store:
-      mongo:
-        password: secretpassword
-        username: admin
-        database: ad
-      redis:
-        password: secretpassword
-      minio:
-        username: admin
-        password: secretpassword
+      <<: *creds
     values:
       - src: values/dev/platform.yml
 

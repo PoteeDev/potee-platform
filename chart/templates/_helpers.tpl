@@ -183,6 +183,36 @@ component: manager
 {{- end -}}
 
 
+{{- define "potee.events.labels" -}}
+{{ include "potee.events.selectorLabels" . }}
+{{- end -}}
+
+{{- define "potee.events.selectorLabels" -}}
+component: events
+{{- end -}}
+
+
+{{- define "potee.events.fullname" -}}
+{{- if .Values.events.fullnameOverride -}}
+{{- .Values.events.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.events.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name .Values.events.name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.events.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "potee.serviceAccountName.events" -}}
+{{- if .Values.serviceAccounts.events.create -}}
+    {{ default (include "potee.events.fullname" .) .Values.serviceAccounts.events.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.events.name }}
+{{- end -}}
+{{- end -}}
+
 
 {{- define "potee.score.labels" -}}
 {{ include "potee.score.selectorLabels" . }}
@@ -213,5 +243,3 @@ component: score
     {{ default "default" .Values.serviceAccounts.score.name }}
 {{- end -}}
 {{- end -}}
-
-

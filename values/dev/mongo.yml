@@ -7,6 +7,8 @@ auth:
   databases:
     - "{{ .Release.Store.mongo.database }}"
 
+architecture: "replicaset"
+
 initdbScripts:
   init-db.js: |-
     db = new Mongo().getDB("ad");
@@ -17,7 +19,7 @@ initdbScripts:
       name: "naliway",
       login: "naliway",
       subnet: "10.0.1.0/24",
-      ip: "localhost",
+      ip: "10.10.124.151",
       hash: "$2a$10$kwBXqn0kau4HRn2SO6ufr.PL.5u3RsENjCnmzySn2A8mxeOFpo9Km",
       visible: true,
       blocked: false
@@ -28,7 +30,7 @@ initdbScripts:
       name: "nakateam",
       login: "nakateam",
       subnet: "10.0.2.0/24",
-      ip: "localhost",
+      ip: "10.10.124.151",
       hash: "$2a$10$kwBXqn0kau4HRn2SO6ufr.PL.5u3RsENjCnmzySn2A8mxeOFpo9Km",
       visible: true,
       blocked: false
