@@ -45,7 +45,7 @@ spec:
             {{- end }}
             backend:
               service:
-                name: "{{ $.Release.Name }}-{{ include "potee.name" $ }}-{{ .backend.service.name }}"
+                name: "{{ include "potee.name" $ }}-{{ .backend.service.name }}"
                 port:
                   number: {{ .backend.service.port.number }}
           {{- end }}

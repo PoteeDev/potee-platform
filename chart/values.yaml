@@ -1,7 +1,7 @@
 # Default values for chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+nameOverride: ""
 redis:
   password: ""
 
@@ -260,6 +260,8 @@ admin:
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
 
+  password: ""
+
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
@@ -482,6 +484,34 @@ web:
   tolerations: []
 
   affinity: {}
+
+domain: potee.local
+ovpnAdmin:
+  image: flant/ovpn-admin:2.0.2
+  basicAuth:
+    user: admin
+    password: changeme
+openvpn:
+  image: flant/ovpn-admin:openvpn-2.0.2
+  subnet: 172.16.200.0/255.255.254.0
+  nodeSelector: {}
+  tolerations: {}
+  # nodeSelector:
+  #   node-role.kubernetes.io/master: ""
+  # tolerations:
+  # - effect: NoSchedule
+  #   key: node-role.kubernetes.io/master
+  #
+  # // LoadBalancer or ExternalIP or HostPort
+  inlet: LoadBalancer
+  #
+  # If inlet: ExternalIP
+  # externalIP: 1.2.3.4
+  # externalPort: 1194
+  #
+  # If inlet: HostPort
+  hostPort: 1194
+
 serviceAccounts:
   web:
     # Specifies whether a service account should be created

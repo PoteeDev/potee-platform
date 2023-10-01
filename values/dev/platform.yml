@@ -13,6 +13,9 @@ minio:
 checkers:
   replicaCount: 1
 
+admin:
+  password: "{{ .Release.Store.admin.password }}"
+
 manager:
   scenario: |
     time: 1h

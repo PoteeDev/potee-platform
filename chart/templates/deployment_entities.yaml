@@ -36,6 +36,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "potee.name" . }}-config
+            - configMapRef:
+                name: openvpn-envs
             - secretRef:
                 name: {{ include "potee.name" . }}-access
           ports:

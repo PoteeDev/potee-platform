@@ -11,6 +11,9 @@ data:
   MONGO_HOST: "mongodb-headless"
   MONGO_USER: {{ .Values.mongo.username }}
   MONGO_DB: {{ .Values.mongo.database }}
+  OVPN_HOST: "ovpn-admin"
+  OVPN_PORT: "8000"
+
 
 ---
 apiVersion: v1

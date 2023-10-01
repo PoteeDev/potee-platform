@@ -39,8 +39,10 @@ spec:
               protocol: TCP
           env:
           - name: ADMIN_PASS
-            value: admin
+            value: {{ .Values.admin.password}}
           envFrom:
+          - configMapRef:
+              name: openvpn-envs
           - configMapRef:
               name: {{ include "potee.name" . }}-config
           - configMapRef:

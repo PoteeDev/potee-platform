@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.events.image.repository }}:{{ .Values.events.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.events.image.pullPolicy }}
           ports:
-            - name: http
+            - name: ws
               containerPort: {{ .Values.events.service.port }}
               protocol: TCP
           envFrom:

@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.events.service.type }}
   ports:
     - port: {{ .Values.events.service.port }}
-      targetPort: http
+      targetPort: ws
       protocol: TCP
-      name: http
+      name: ws
   selector:
     {{- include "potee.events.selectorLabels" . | nindent 4 }}

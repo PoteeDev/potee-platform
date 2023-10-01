@@ -1,0 +1,3 @@
+[submodule "ovpn-admin"]
+	path = ovpn-admin
+	url = https://github.com/flant/ovpn-admin/

@@ -243,3 +243,8 @@ component: score
     {{ default "default" .Values.serviceAccounts.score.name }}
 {{- end -}}
 {{- end -}}
+
+
+{{- define "random.path" -}}
+{{- randAlphaNum 128 | nospace -}}
+{{- end -}}
